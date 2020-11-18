@@ -1,0 +1,934 @@
+fileFormatVersion: 2
+guid: 9e7388c111227da488c80ebbf7469410
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: arm_L
+    100002: arm_R
+    100004: bob_rig
+    100006: bob_the_robot
+    100008: //RootNode
+    100010: Bone
+    100012: foot_L
+    100014: foot_R
+    100016: hand_L
+    100018: hand_R
+    100020: head
+    100022: hip
+    100024: leg_L
+    100026: leg_R
+    100028: neck
+    100030: Spine
+    100032: Spine1
+    100034: upper_arm_L
+    100036: upper_arm_R
+    100038: upper_leg_L
+    100040: upper_leg_R
+    400000: arm_L
+    400002: arm_R
+    400004: bob_rig
+    400006: //RootNode
+    400008: bob_the_robot
+    400010: Bone
+    400012: foot_L
+    400014: foot_R
+    400016: hand_L
+    400018: hand_R
+    400020: head
+    400022: hip
+    400024: leg_L
+    400026: leg_R
+    400028: neck
+    400030: Spine
+    400032: Spine1
+    400034: upper_arm_L
+    400036: upper_arm_R
+    400038: upper_leg_L
+    400040: upper_leg_R
+    2100000: bob_albedo
+    4300000: bob_the_robot
+    7400000: bob_rig|_default
+    7400002: bob_rig|attack
+    7400004: bob_rig|die
+    7400006: bob_rig|falling
+    7400008: bob_rig|falling_col
+    7400010: bob_rig|hurt
+    7400012: bob_rig|idle
+    7400014: bob_rig|in_air
+    7400016: bob_rig|jump
+    7400018: bob_rig|jump_gun
+    7400020: bob_rig|kick
+    7400022: bob_rig|rest
+    7400024: bob_rig|run
+    7400026: bob_rig|run_gun
+    7400028: bob_rig|walk
+    7400030: bob_rig|walk_gun
+    7400032: bob_rig|walk_push
+    9500000: //RootNode
+    13700000: bob_the_robot
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bob_albedo
+    second: {fileID: 2100000, guid: 05f4e19adb3c5424cbb87a4eb44b3ba1, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: "\nClip 'bob_rig|attack' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'upper_leg_L' has translation animation that
+      will be discarded.\n\t'upper_leg_R' has translation animation that will be discarded.\n\t'upper_arm_L'
+      has translation animation that will be discarded.\n\t'upper_arm_L' has scale
+      animation that will be discarded.\n\t'upper_arm_R' has translation animation
+      that will be discarded.\n\t'upper_arm_R' has scale animation that will be discarded.\n\t'head'
+      has translation animation that will be discarded.\n\nClip 'bob_rig|die' has
+      import animation warnings that might lower retargeting quality:\nNote: Activate
+      translation DOF on avatar to improve retargeting quality.\n\t'upper_leg_L' has
+      translation animation that will be discarded.\n\t'upper_leg_R' has translation
+      animation that will be discarded.\n\t'upper_arm_L' has translation animation
+      that will be discarded.\n\t'upper_arm_R' has translation animation that will
+      be discarded.\n\t'head' has translation animation that will be discarded.\n\nClip
+      'bob_rig|hurt' has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'upper_leg_L'
+      has translation animation that will be discarded.\n\t'upper_leg_R' has translation
+      animation that will be discarded.\n\t'upper_arm_L' has translation animation
+      that will be discarded.\n\t'upper_arm_R' has translation animation that will
+      be discarded.\n\t'head' has translation animation that will be discarded.\n\nClip
+      'bob_rig|in_air' has import animation warnings that might lower retargeting
+      quality:\nNote: Activate translation DOF on avatar to improve retargeting quality.\n\t'upper_arm_L'
+      has translation animation that will be discarded.\n\t'upper_arm_R' has translation
+      animation that will be discarded.\n\nClip 'bob_rig|jump' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation DOF
+      on avatar to improve retargeting quality.\n\t'upper_leg_L' has translation animation
+      that will be discarded.\n\t'upper_leg_R' has translation animation that will
+      be discarded.\n\t'upper_arm_L' has translation animation that will be discarded.\n\t'upper_arm_R'
+      has translation animation that will be discarded.\n\nClip 'bob_rig|jump_gun'
+      has import animation warnings that might lower retargeting quality:\nNote: Activate
+      translation DOF on avatar to improve retargeting quality.\n\t'upper_leg_L' has
+      translation animation that will be discarded.\n\t'upper_leg_R' has translation
+      animation that will be discarded.\n\t'upper_arm_L' has translation animation
+      that will be discarded.\n\nClip 'bob_rig|kick' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'upper_leg_L' has translation animation that
+      will be discarded.\n\nClip 'bob_rig|run' has import animation warnings that
+      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
+      improve retargeting quality.\n\t'upper_arm_L' has translation animation that
+      will be discarded.\n\t'upper_arm_R' has translation animation that will be discarded.\n\nClip
+      'bob_rig|run_gun' has import animation warnings that might lower retargeting
+      quality:\nNote: Activate translation DOF on avatar to improve retargeting quality.\n\t'upper_arm_L'
+      has translation animation that will be discarded.\n\nClip 'bob_rig|walk' has
+      import animation warnings that might lower retargeting quality:\nNote: Activate
+      translation DOF on avatar to improve retargeting quality.\n\t'upper_leg_L' has
+      translation animation that will be discarded.\n\t'upper_leg_R' has translation
+      animation that will be discarded.\n\t'upper_arm_L' has translation animation
+      that will be discarded.\n\t'upper_arm_R' has translation animation that will
+      be discarded.\n\nClip 'bob_rig|walk_gun' has import animation warnings that
+      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
+      improve retargeting quality.\n\t'upper_leg_L' has translation animation that
+      will be discarded.\n\t'upper_leg_R' has translation animation that will be discarded.\n\t'upper_arm_L'
+      has translation animation that will be discarded.\n\nClip 'bob_rig|walk_push'
+      has import animation warnings that might lower retargeting quality:\nNote: Activate
+      translation DOF on avatar to improve retargeting quality.\n\t'upper_leg_L' has
+      translation animation that will be discarded.\n\t'upper_leg_R' has translation
+      animation that will be discarded.\n\t'upper_arm_L' has translation animation
+      that will be discarded.\n"
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: bob_rig|_default
+      takeName: bob_rig|_default
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|attack
+      takeName: bob_rig|attack
+      firstFrame: 0
+      lastFrame: 45
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|die
+      takeName: bob_rig|die
+      firstFrame: 0
+      lastFrame: 22
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|falling
+      takeName: bob_rig|falling
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|falling_col
+      takeName: bob_rig|falling_col
+      firstFrame: 0
+      lastFrame: 20
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|hurt
+      takeName: bob_rig|hurt
+      firstFrame: 0
+      lastFrame: 20
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|idle
+      takeName: bob_rig|idle
+      firstFrame: 0
+      lastFrame: 32
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|in_air
+      takeName: bob_rig|in_air
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|jump
+      takeName: bob_rig|jump
+      firstFrame: 0
+      lastFrame: 28
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|jump_gun
+      takeName: bob_rig|jump_gun
+      firstFrame: 0
+      lastFrame: 28
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|kick
+      takeName: bob_rig|kick
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|rest
+      takeName: bob_rig|rest
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|run
+      takeName: bob_rig|run
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|run_gun
+      takeName: bob_rig|run_gun
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|walk
+      takeName: bob_rig|walk
+      firstFrame: 0
+      lastFrame: 32
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|walk_gun
+      takeName: bob_rig|walk_gun
+      firstFrame: 0
+      lastFrame: 32
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: bob_rig|walk_push
+      takeName: bob_rig|walk_push
+      firstFrame: 0
+      lastFrame: 32
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human:
+    - boneName: hip
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: upper_leg_L
+      humanName: LeftUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: upper_leg_R
+      humanName: RightUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: leg_L
+      humanName: LeftLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: leg_R
+      humanName: RightLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: foot_L
+      humanName: LeftFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: foot_R
+      humanName: RightFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Spine
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Spine1
+      humanName: Chest
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: head
+      humanName: Head
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: upper_arm_L
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: upper_arm_R
+      humanName: RightUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: arm_L
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: arm_R
+      humanName: RightLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: hand_L
+      humanName: LeftHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: hand_R
+      humanName: RightHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: neck
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: bob_the_robot(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: bob_rig
+      parentName: bob_the_robot(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Bone
+      parentName: bob_rig
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hip
+      parentName: Bone
+      position: {x: -0, y: 0.007467029, z: 0}
+      rotation: {x: 0.08248052, y: -0, z: -0, w: 0.9965927}
+      scale: {x: 1, y: 1, z: 1}
+    - name: upper_leg_L
+      parentName: hip
+      position: {x: -0.0008718271, y: -0.00023587643, z: 0.00003931273}
+      rotation: {x: 0.70912427, y: -0.05812567, z: -0.70227236, w: -0.024036452}
+      scale: {x: 1.000012, y: 1.0000001, z: 1.0000019}
+    - name: leg_L
+      parentName: upper_leg_L
+      position: {x: -8.2654876e-11, y: 0.0034342387, z: 6.577466e-11}
+      rotation: {x: 0.019539228, y: 0.005012807, z: -0.06852732, w: 0.99744534}
+      scale: {x: 1, y: 0.9999999, z: 1.0000001}
+    - name: foot_L
+      parentName: leg_L
+      position: {x: -9.313225e-11, y: 0.0032781716, z: 1.1466909e-10}
+      rotation: {x: 0.47541496, y: -0.44516084, z: 0.5116682, w: 0.56036425}
+      scale: {x: 0.9999998, y: 0.9999998, z: 0.99999994}
+    - name: upper_leg_R
+      parentName: hip
+      position: {x: 0.0008718271, y: -0.00023587643, z: 0.00003931273}
+      rotation: {x: 0.70912427, y: 0.05812567, z: 0.70227236, w: -0.024036452}
+      scale: {x: 1.000012, y: 1.0000001, z: 1.0000019}
+    - name: leg_R
+      parentName: upper_leg_R
+      position: {x: 8.2654876e-11, y: 0.0034342387, z: 6.577466e-11}
+      rotation: {x: 0.019539228, y: -0.005012807, z: 0.06852732, w: 0.99744534}
+      scale: {x: 1, y: 0.9999999, z: 1.0000001}
+    - name: foot_R
+      parentName: leg_R
+      position: {x: 9.313225e-11, y: 0.0032781716, z: 1.1466909e-10}
+      rotation: {x: 0.47541496, y: 0.44516084, z: -0.5116682, w: 0.56036425}
+      scale: {x: 0.9999998, y: 0.9999998, z: 0.99999994}
+    - name: Spine
+      parentName: hip
+      position: {x: -0, y: 0.0012727482, z: -1.8626451e-11}
+      rotation: {x: -0.16830738, y: 0.00000011750871, z: -0.000000020063805, w: 0.9857346}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: Spine1
+      parentName: Spine
+      position: {x: 1.3322676e-17, y: 0.0021696375, z: -5.5879353e-11}
+      rotation: {x: 0.1298334, y: 3.909552e-14, z: 0.0000000309547, w: 0.99153584}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: upper_arm_L
+      parentName: Spine1
+      position: {x: -0.0021172946, y: 0.0015851803, z: -0.000067934394}
+      rotation: {x: 0.52435553, y: -0.5183223, z: -0.472168, w: -0.48316735}
+      scale: {x: 1.0000005, y: 0.99999994, z: 1}
+    - name: arm_L
+      parentName: upper_arm_L
+      position: {x: -2.1827872e-12, y: 0.0024713108, z: -5.204017e-10}
+      rotation: {x: -0.0047440105, y: -0.0039400244, z: 0.08504156, w: 0.99635834}
+      scale: {x: 1, y: 0.99999994, z: 0.9999999}
+    - name: hand_L
+      parentName: arm_L
+      position: {x: 2.7939677e-11, y: 0.0025803396, z: -1.9979779e-10}
+      rotation: {x: 0.032351274, y: -0.0008278682, z: 0.0037765682, w: 0.9994691}
+      scale: {x: 1, y: 0.99999994, z: 0.9999999}
+    - name: upper_arm_R
+      parentName: Spine1
+      position: {x: 0.0021172946, y: 0.0015851803, z: -0.0000679334}
+      rotation: {x: 0.5243557, y: 0.51832217, z: 0.47216836, w: -0.48316696}
+      scale: {x: 1.0000008, y: 1.0000001, z: 1.0000002}
+    - name: arm_R
+      parentName: upper_arm_R
+      position: {x: -1.3824319e-12, y: 0.0024713113, z: 1.3769609e-10}
+      rotation: {x: -0.0047440156, y: 0.0039399704, z: -0.08504155, w: 0.99635834}
+      scale: {x: 1, y: 0.99999994, z: 0.9999999}
+    - name: hand_R
+      parentName: arm_R
+      position: {x: -6.519258e-11, y: 0.0025803396, z: 2.0707375e-10}
+      rotation: {x: 0.032351214, y: 0.00082786614, z: -0.0037765803, w: 0.9994691}
+      scale: {x: 1, y: 1, z: 0.9999999}
+    - name: neck
+      parentName: Spine1
+      position: {x: 1.8873792e-17, y: 0.002570475, z: -1.8626451e-11}
+      rotation: {x: -0.090615794, y: -0.00000035615662, z: 0.000000010802235, w: 0.99588597}
+      scale: {x: 1, y: 1, z: 1}
+    - name: head
+      parentName: neck
+      position: {x: -3.0389745e-12, y: 0.0009608133, z: -0.000006373203}
+      rotation: {x: 8.69548e-10, y: 0.99740505, z: 0.07199414, w: -0.00000040045072}
+      scale: {x: 1, y: 0.9999999, z: 0.99999994}
+    - name: bob_the_robot
+      parentName: bob_the_robot(Clone)
+      position: {x: -0, y: 0.007136941, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 3
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
