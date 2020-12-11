@@ -16,9 +16,11 @@ using UnityEngine.XR.ARSubsystems;
 using Unity.Collections.LowLevel.Unsafe;
 using System;
 using TMPro;
+using System.Collections.Generic;
 
 namespace Arway
 {
+
     public class MultiMapLocalizer : MonoBehaviour
     {
         public ArwaySDK m_Sdk = null;
@@ -44,7 +46,7 @@ namespace Arway
 
         CloudListItem cloudListItem;
 
-        public string[] cloudIds;
+        public List<int> cloudMaps = new List<int>();
 
         /// <summary>
         /// Start this instance.
@@ -53,15 +55,7 @@ namespace Arway
         {
             m_Sdk = ArwaySDK.Instance;
 
-            if (m_Sdk.developerToken != null && m_Sdk.developerToken.Length > 0)
-            {
-                if (cloudIds.Length == 0)
-                {
-                    NotificationManager.Instance.GenerateNotification("No Cloud-IDs for localization!");
-                }
-               
-            }
-            else
+            if (string.IsNullOrEmpty(m_Sdk.developerToken))
             {
                 NotificationManager.Instance.GenerateError("Invalid Developer Token!");
             }
@@ -74,6 +68,8 @@ namespace Arway
         /// </summary>
         public unsafe void RequestLocalization()
         {
+            Debug.Log(" >>>>>>   RequestLocalization  <<<<<<<" + cloudMaps.Count);
+
             XRCameraImage image;
             XRCameraIntrinsics intr;
             ARCameraManager cameraManager = m_Sdk.cameraManager;
@@ -121,29 +117,25 @@ namespace Arway
 
                 loc_map_txt.text = "";
 
-                for (int i = 0; i < cloudIds.Length; i++)
-                {
+                Debug.Log("TotalMaps: " + cloudMaps.Count);
 
-                    string cloudId = cloudIds[i];
+                LocalizationRequest lr = new LocalizationRequest();
+                lr.cloud_Ids = cloudMaps;
+                lr.width = image.width;
+                lr.height = image.height;
+                lr.channel = 3;
+                lr.Camera_fx = intr.focalLength.x;
+                lr.Camera_fy = intr.focalLength.y;
+                lr.Camera_px = intr.principalPoint.x;
+                lr.Camera_py = intr.principalPoint.y;
+                lr.version = m_Sdk.arwaysdkversion;
+                lr.image = Convert.ToBase64String(_bytesjpg);
+                lr.timestamp = image.timestamp;
 
-                    LocalizationRequest lr = new LocalizationRequest();
-                    lr.cloud_Id = int.Parse(cloudId);
-                    lr.width = image.width;
-                    lr.height = image.height;
-                    lr.channel = 3;
-                    lr.Camera_fx = intr.focalLength.x;
-                    lr.Camera_fy = intr.focalLength.y;
-                    lr.Camera_px = intr.principalPoint.x;
-                    lr.Camera_py = intr.principalPoint.y;
-                    lr.version = m_Sdk.arwaysdkversion;
-                    lr.image = Convert.ToBase64String(_bytesjpg);
-                    lr.timestamp = image.timestamp;
+                string loc_request_data = JsonUtility.ToJson(lr);
 
-                    string loc_request_data = JsonUtility.ToJson(lr);
+                StartCoroutine(sendCameraImages(loc_request_data));
 
-                    StartCoroutine(sendCameraImages(loc_request_data, cloudId));
-
-                }
             }
         }
 
@@ -154,10 +146,8 @@ namespace Arway
         /// <returns>The camera images.</returns>
         /// <param name="rawdata">Rawdata.</param>
         /// <param name="cloud_id">Cloud identifier.</param>
-        IEnumerator sendCameraImages(string rawdata, string cloud_id)
+        IEnumerator sendCameraImages(string rawdata)
         {
-
-            Debug.Log("cloud_id>> " + cloud_id);
 
             loaderText.text = "Localizing...";
             loaderPanel.SetActive(true);
@@ -172,7 +162,7 @@ namespace Arway
 
                 if (www.error != null)
                 {
-                    Debug.Log("Error for Cloud ID >> " + cloud_id + "  >>> " + www.error);
+                    
                     loaderPanel.SetActive(false);
 
                 }
@@ -181,7 +171,7 @@ namespace Arway
                     loaderPanel.SetActive(false);
 
                     Debug.Log("All OK");
-                    Debug.Log("Status Code: " + www.downloadHandler.text);
+                    Debug.Log("Localize Response: " + www.downloadHandler.text);
 
                     requestCount++;
 
@@ -195,8 +185,6 @@ namespace Arway
 
                         if (vibrateOnLocalize)
                             Handheld.Vibrate();
-
-                        loc_map_txt.text = "Localized with Cloud ID : " + " (" + cloud_id + ")";
 
                     }
 

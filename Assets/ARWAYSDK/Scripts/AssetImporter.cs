@@ -40,7 +40,7 @@ namespace Arway
         private string filePath = "";
 
         public TMP_Dropdown dropdown;
-
+        Utils utils = new Utils();
 
         void Start()
         {
@@ -70,6 +70,7 @@ namespace Arway
                 else
                 {
                     Debug.Log("***********\tDeveloper Token not valid!\t***********");
+                    NotificationManager.Instance.GenerateError("Invalid Developer Token!!");
                 }
             }
 
@@ -83,7 +84,7 @@ namespace Arway
             }
         }
 
-
+       
         /// <summary>
         /// Gets the map data.
         /// </summary>
@@ -91,9 +92,6 @@ namespace Arway
         /// <param name="map_id">Map identifier.</param>
         IEnumerator GetMapData(string map_id)
         {
-            //WWWForm form = new WWWForm();
-            //form.AddField("map_id", map_id);
-
             using (UnityWebRequest www = UnityWebRequest.Get(m_Sdk.ContentServer + EndPoint.MAP_DATA + "index.php?map_id=" + map_id))
             {
                 www.SetRequestHeader("dev-token", m_Sdk.developerToken);
@@ -113,111 +111,87 @@ namespace Arway
                         MapAssetData mapAssetData = JsonUtility.FromJson<MapAssetData>(jsonResult);
 
 
+                        //---------------------   waypoints  -------------------------//
+
                         if (mapAssetData.Waypoints != null)
-                        {   //   Debug.Log("Total waypoints: " + mapAssetData.Waypoints.Length);
+                        {  
                             for (int i = 0; i < mapAssetData.Waypoints.Length; i++)
                             {
-                                Vector3 pos = new Vector3((float)mapAssetData.Waypoints[i].Position.posX * -1f
-                                    , (float)mapAssetData.Waypoints[i].Position.posY - 1.3f
-                                    , (float)mapAssetData.Waypoints[i].Position.posZ);
-
-                                Vector3 rot = new Vector3((float)mapAssetData.Waypoints[i].Rotation.rotX
-                                    , (float)mapAssetData.Waypoints[i].Rotation.rotY
-                                    , (float)mapAssetData.Waypoints[i].Rotation.rotZ);
-
+                                Vector3 pos = utils.getPose(mapAssetData.Waypoints[i].Position);
+                                Vector3 rot = utils.getRot(mapAssetData.Waypoints[i].Rotation);
 
                                 StartCoroutine(CreatePrefab(wayPoint, mapAssetData.Waypoints[i].name, pos, rot));
                             }
                         }
+
+                        //---------------------   Destinations  -------------------------//
 
                         if (mapAssetData.Destinations != null)
                         {
                             Debug.Log("Total Destinations: " + mapAssetData.Destinations.Length);
                             for (int i = 0; i < mapAssetData.Destinations.Length; i++)
                             {
-                                Vector3 pos = new Vector3((float)mapAssetData.Destinations[i].Position.posX * -1f
-                                    , (float)mapAssetData.Destinations[i].Position.posY - 1.2f
-                                    , (float)mapAssetData.Destinations[i].Position.posZ);
-
-                                Vector3 rot = new Vector3((float)mapAssetData.Destinations[i].Rotation.rotX
-                                    , (float)mapAssetData.Destinations[i].Rotation.rotY
-                                    , (float)mapAssetData.Destinations[i].Rotation.rotZ);
+                                Vector3 pos = utils.getPose(mapAssetData.Destinations[i].Position);
+                                Vector3 rot = utils.getRot(mapAssetData.Destinations[i].Rotation);
 
                                 StartCoroutine(CreatePrefab(destination, mapAssetData.Destinations[i].name, pos, rot));
 
                                 dropdown.options.Add(new TMP_Dropdown.OptionData(mapAssetData.Destinations[i].name));
 
                             }
-
-
                         }
+
+                        //---------------------   GlbModels  -------------------------//
 
                         if (mapAssetData.GlbModels != null)
                         {
-                            //   Debug.Log("TOTAL_GLBs >>> " + mapAssetData.GlbModels.Length);
                             for (int i = 0; i < mapAssetData.GlbModels.Length; i++)
                             {
-                                Vector3 pos = new Vector3((float)mapAssetData.GlbModels[i].Position.posX * -1f
-                                   , (float)mapAssetData.GlbModels[i].Position.posY
-                                   , (float)mapAssetData.GlbModels[i].Position.posZ);
+                                Vector3 pos = utils.getPose(mapAssetData.GlbModels[i].Position);
+                                Vector3 rot = utils.getRot(mapAssetData.GlbModels[i].Rotation);
+                                Vector3 scale = utils.getScale(mapAssetData.GlbModels[i].Scale);
 
-                                Vector3 rot = new Vector3((float)mapAssetData.GlbModels[i].Rotation.rotX
-                                    , (float)mapAssetData.GlbModels[i].Rotation.rotY
-                                    , (float)mapAssetData.GlbModels[i].Rotation.rotZ);
-
-
-
-                                CreateGlbPrefab(mapAssetData.GlbModels[i].name, pos, rot, mapAssetData.GlbModels[i].link);
+                                CreateGlbPrefab(mapAssetData.GlbModels[i].name, pos, rot, scale, mapAssetData.GlbModels[i].link);
                             }
                         }
+
+                        //---------------------   FloorImages  -------------------------//
 
                         if (mapAssetData.FloorImages != null)
                         {
                             for (int i = 0; i < mapAssetData.FloorImages.Length; i++)
                             {
-                                Vector3 pos = new Vector3((float)mapAssetData.FloorImages[i].Position.posX * -1f
-                                      , (float)mapAssetData.FloorImages[i].Position.posY
-                                      , (float)mapAssetData.FloorImages[i].Position.posZ);
-
-                                Vector3 rot = new Vector3((float)mapAssetData.FloorImages[i].Rotation.rotX
-                                    , (float)mapAssetData.FloorImages[i].Rotation.rotY
-                                    , (float)mapAssetData.FloorImages[i].Rotation.rotZ);
+                                Vector3 pos = utils.getPose(mapAssetData.FloorImages[i].Position);
+                                Vector3 rot = utils.getRot(mapAssetData.FloorImages[i].Rotation);
+                                Vector3 scale = utils.getScale(mapAssetData.FloorImages[i].Scale);
 
                                 string imageUrl = mapAssetData.FloorImages[i].link;
 
                                 if (!string.IsNullOrEmpty(imageUrl))
-                                    StartCoroutine(loadPoiImage(imageUrl, pos, rot, mapAssetData.FloorImages[i].name));
+                                    StartCoroutine(loadPoiImage(imageUrl, pos, rot, scale, mapAssetData.FloorImages[i].name));
                                 else
                                     Debug.Log("Image URL is empty!!");
                             }
                         }
 
-                        for (int i = 0; i < mapAssetData.FloorPlans.Length; i++)
-                        {
-
-                        }
+                        //---------------------   Texts  -------------------------//
 
                         if (mapAssetData.Texts != null)
                         {
                             for (int i = 0; i < mapAssetData.Texts.Length; i++)
                             {
-                                Vector3 pos = new Vector3((float)mapAssetData.Texts[i].Position.posX * -1f
-                                      , (float)mapAssetData.Texts[i].Position.posY
-                                      , (float)mapAssetData.Texts[i].Position.posZ);
-
-                                Vector3 rot = new Vector3((float)mapAssetData.Texts[i].Rotation.rotX
-                                    , (float)mapAssetData.Texts[i].Rotation.rotY
-                                    , (float)mapAssetData.Texts[i].Rotation.rotZ);
+                                Vector3 pos = utils.getPose(mapAssetData.Texts[i].Position);
+                                Vector3 rot = utils.getRot(mapAssetData.Texts[i].Rotation);
+                                Vector3 scale = utils.getScale(mapAssetData.Texts[i].Scale);
 
                                 string text = mapAssetData.Texts[i].name;
 
                                 if (text != null)
-                                    loadPoiText(text, pos, rot, text);
+                                    loadPoiText(text, pos, rot, scale, text);
                                 else
                                     Debug.Log("Text is empty!!");
                             }
                         }
-
                     }
                     catch (Exception e)
                     {
@@ -226,6 +200,9 @@ namespace Arway
                 }
             }
         }
+
+
+       
 
 
         // update drop down for destinations... 
@@ -237,7 +214,6 @@ namespace Arway
                 Debug.Log("selection >> " + val + " " + dropdown.options[val].text);
             }
         }
-
 
 
         IEnumerator CreatePrefab(GameObject gameObject, string name, Vector3 pos, Vector3 rot)
@@ -261,10 +237,8 @@ namespace Arway
             yield return name;
         }
 
-        public IEnumerator loadPoiImage(String url, Vector3 pos, Vector3 rot, String name)
+        public IEnumerator loadPoiImage(String url, Vector3 pos, Vector3 rot, Vector3 scale, String name)
         {
-            Debug.Log("URL>>>" + url);
-
             var imgpoi = Instantiate(imagesPOI);
             imgpoi.transform.SetParent(m_ARSpace.transform);
             imgpoi.transform.localPosition = pos;
@@ -286,7 +260,7 @@ namespace Arway
             }
         }
 
-        public void loadPoiText(String textcon, Vector3 pos, Vector3 rot, String name)
+        public void loadPoiText(String textcon, Vector3 pos, Vector3 rot, Vector3 scale, String name)
         {
             var temp = Instantiate(textPOI);
             temp.transform.SetParent(m_ARSpace.transform);
@@ -298,15 +272,15 @@ namespace Arway
         }
 
 
-        // import GLB model
-        private void CreateGlbPrefab(string glb_name, Vector3 pos, Vector3 rot, string url)
+        // --------------- >>> START <<< GLB Model Loading ---------------//
+        private void CreateGlbPrefab(string glb_name, Vector3 pos, Vector3 rot, Vector3 scale, string url)
         {
             string path = GetFilePath(url);
             //Debug.Log("GLB_URL >> " + url+"\n path>> "+path);
             if (File.Exists(path))
             {
                 Debug.Log("Found file locally, loading...");
-                LoadModel(path, glb_name, pos, rot);
+                LoadModel(path, glb_name, pos, rot, scale);
                 return;
             }
 
@@ -320,7 +294,7 @@ namespace Arway
                 else
                 {
                     // Save the model into a new wrapper
-                    LoadModel(path, glb_name, pos, rot);
+                    LoadModel(path, glb_name, pos, rot, scale);
                 }
             }));
         }
@@ -333,14 +307,15 @@ namespace Arway
             return $"{filePath}{filename}";
         }
 
-        void LoadModel(string path, string glb_name, Vector3 pos, Vector3 rot)
+        void LoadModel(string path, string glb_name, Vector3 pos, Vector3 rot, Vector3 scale)
         {
             GameObject model = Importer.LoadFromFile(path);
 
             model.name = glb_name;
             model.transform.parent = m_ARSpace.transform;
             model.transform.localPosition = pos;
-            // model.transform.localEulerAngles = rot;
+            model.transform.localEulerAngles = rot;
+            model.transform.localScale = scale;
 
         }
 
@@ -353,6 +328,8 @@ namespace Arway
                 callback(req);
             }
         }
+
+        // --------------- >>> END <<<  GLB Model Loading ---------------//
 
         /// <summary>
         /// Backs the button click.

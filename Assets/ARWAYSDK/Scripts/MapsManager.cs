@@ -34,6 +34,7 @@ namespace Arway
             else
             {
                 Debug.Log("***********\tDeveloper Token not valid!\t***********");
+                NotificationManager.Instance.GenerateError("Invalid Developer Token!!");
             }
         }
 

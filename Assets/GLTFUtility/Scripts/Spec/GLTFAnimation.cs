@@ -50,13 +50,13 @@ namespace Siccity.GLTFUtility {
 #endregion
 
 		public ImportResult Import(GLTFAccessor.ImportResult[] accessors, GLTFNode.ImportResult[] nodes, ImportSettings importSettings) {
+			bool multiRoots = nodes.Where(x => x.IsRoot).Count() > 1;
+
 			ImportResult result = new ImportResult();
 			result.clip = new AnimationClip();
 			result.clip.name = name;
 
-			if (importSettings.useLegacyClips) {
-				result.clip.legacy = true;
-			}
+			result.clip.legacy = importSettings.useLegacyClips;
 
 			for (int i = 0; i < channels.Length; i++) {
 				Channel channel = channels[i];
@@ -83,6 +83,12 @@ namespace Siccity.GLTFUtility {
 					if (node.parent.HasValue) node = nodes[node.parent.Value];
 					else node = null;
 				}
+
+				// If file has multiple root nodes, a new parent will be created for them as a final step of the import process. This parent fucks up the curve relative paths.
+				// Add node.transform.name to path if there are multiple roots. This is not the most elegant fix but it works.
+				// See GLTFNodeExtensions.GetRoot
+				if (multiRoots) relativePath = node.transform.name + "/" + relativePath;
+
 				System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 				float[] keyframeInput = accessors[sampler.input].ReadFloat().ToArray();
 				switch (channel.target.path) {

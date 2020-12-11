@@ -2340,7 +2340,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 232397725}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999857
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2899,6 +2899,11 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 4665284271080193081}
+    - target: {fileID: 1565778501506909414, guid: 00bbd860f184a4414bbf0064bd284b54,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleDestinationSelection
+      objectReference: {fileID: 0}
     - target: {fileID: 1565778501506909415, guid: 00bbd860f184a4414bbf0064bd284b54,
         type: 3}
       propertyPath: m_LocalPosition.x

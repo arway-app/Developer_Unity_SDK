@@ -38,7 +38,7 @@ namespace Arway
 
 		private string m_LocalizationServer = "https://localization.arway.app/";
 
-		private string m_contentServer = "https://api.arway.app/";
+        private string m_contentServer = "https://api.arway.app/";
 
 		private ARCameraManager m_CameraManager;
 		private ARSession m_ARSession;

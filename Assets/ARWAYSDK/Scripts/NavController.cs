@@ -58,7 +58,7 @@ namespace Arway
             }
         }
 
-        public void HangleDestinationSelection(int val)
+        public void HandleDestinationSelection(int val)
         {
             //Debug.Log("selection >> " + val + " " + dropdown.options[val].text);
             dropdown.Hide();

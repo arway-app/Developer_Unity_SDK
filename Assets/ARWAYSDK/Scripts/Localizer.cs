@@ -17,6 +17,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using System;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections.Generic;
 
 namespace Arway
 {
@@ -47,7 +48,8 @@ namespace Arway
         private int requestCount = 0;
 
         private Texture2D m_Texture;
-        private string cloud_id = "";
+
+        public List<int> cloudMaps = new List<int>();
 
         /// <summary>
         /// Start this instance.
@@ -70,6 +72,7 @@ namespace Arway
             cloudDropdown.options.Clear();
             cloudDropdown.options.Add(new TMP_Dropdown.OptionData("Select Cloud Map"));
 
+
         }
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace Arway
                 loaderPanel.SetActive(true);
 
                 LocalizationRequest lr = new LocalizationRequest();
-                lr.cloud_Id = int.Parse(cloud_id);
+                lr.cloud_Ids = cloudMaps;
                 lr.width = image.width;
                 lr.height = image.height;
                 lr.channel = 3;
@@ -201,8 +204,11 @@ namespace Arway
 
                 string dataString = cloudDropdown.options[val].text;
                 var dataArray = dataString.Trim().Split(' ');
-                cloud_id = dataArray[dataArray.Length - 1];
-                Debug.Log("CLOUD_ID >> " + cloud_id);
+                string cloud_id = dataArray[dataArray.Length - 1];
+
+                cloudMaps.Clear();
+
+                cloudMaps.Add(int.Parse(cloud_id));
 
                 RunButton.SetActive(true);
             }

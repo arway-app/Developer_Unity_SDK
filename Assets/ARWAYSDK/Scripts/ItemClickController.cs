@@ -1,7 +1,5 @@
-﻿﻿using System.Collections;
-using UnityEditor;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Arway
@@ -9,17 +7,25 @@ namespace Arway
 
     public class ItemClickController : MonoBehaviour
     {
-
-        //public string SceneName = "Content";
-
         public GameObject m_MapList;
         public AssetImporter assetImporter;
+        public MultiMapAssetImporter multiMapAssetImporter;
 
         void Start()
         {
-            m_MapList = GameObject.FindGameObjectWithTag("MapList");
-            assetImporter = GameObject.FindGameObjectWithTag("ArwaySDK").GetComponent<AssetImporter>();
-            assetImporter.enabled = false;
+            if (GameObject.FindGameObjectWithTag("MapList") != null)
+                m_MapList = GameObject.FindGameObjectWithTag("MapList");
+
+            if (GameObject.FindGameObjectWithTag("ArwaySDK").GetComponent<AssetImporter>())
+            {
+                assetImporter = GameObject.FindGameObjectWithTag("ArwaySDK").GetComponent<AssetImporter>();
+                assetImporter.enabled = false;
+            }
+
+            if (GameObject.FindGameObjectWithTag("ArwaySDK").GetComponent<MultiMapAssetImporter>())
+                multiMapAssetImporter = GameObject.FindGameObjectWithTag("ArwaySDK").GetComponent<MultiMapAssetImporter>();
+
+           
         }
 
         public void GetMapId()
@@ -37,8 +43,11 @@ namespace Arway
             PlayerPrefs.SetString("MAP_ID", id);
             PlayerPrefs.SetString("MAP_NAME", map_name);
 
-            // SceneManager.LoadScene(SceneName);
-            assetImporter.enabled = true;
+            if (GameObject.FindGameObjectWithTag("ArwaySDK").GetComponent<AssetImporter>())
+                assetImporter.enabled = true;
+
+            if (GameObject.FindGameObjectWithTag("ArwaySDK").GetComponent<MultiMapAssetImporter>())
+                multiMapAssetImporter.enabled = true;
 
             m_MapList.SetActive(false);
 

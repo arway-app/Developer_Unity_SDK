@@ -58,79 +58,140 @@ namespace Siccity.GLTFUtility {
 					public Vector3[] pos, norm, tan;
 				}
 
-				public MeshData(GLTFMesh gltfMesh, GLTFAccessor.ImportResult[] accessors) {
+				public MeshData(GLTFMesh gltfMesh, GLTFAccessor.ImportResult[] accessors, GLTFBufferView.ImportResult[] bufferViews) {
 					name = gltfMesh.name;
 					if (gltfMesh.primitives.Count == 0) {
 						Debug.LogWarning("0 primitives in mesh");
 					} else {
 						for (int i = 0; i < gltfMesh.primitives.Count; i++) {
 							GLTFPrimitive primitive = gltfMesh.primitives[i];
+							// Load draco mesh
+							if (primitive.extensions != null && primitive.extensions.KHR_draco_mesh_compression != null) {
+								GLTFPrimitive.DracoMeshCompression draco = primitive.extensions.KHR_draco_mesh_compression;
+								GLTFBufferView.ImportResult bufferView = bufferViews[draco.bufferView];
+								GLTFUtilityDracoLoader loader = new GLTFUtilityDracoLoader();
+								byte[] buffer = new byte[bufferView.byteLength];
+								bufferView.stream.Seek(bufferView.byteOffset, System.IO.SeekOrigin.Begin);
 
-							int vertStartIndex = verts.Count;
-							submeshVertexStart.Add(vertStartIndex);
+								bufferView.stream.Read(buffer, 0, bufferView.byteLength);
 
-							// Verts - (X points left in GLTF)
-							if (primitive.attributes.POSITION.HasValue) {
-								IEnumerable<Vector3> newVerts = accessors[primitive.attributes.POSITION.Value].ReadVec3().Select(v => { v.x = -v.x; return v; });
-								verts.AddRange(newVerts);
-							}
+								GLTFUtilityDracoLoader.MeshAttributes attribs = new GLTFUtilityDracoLoader.MeshAttributes(
+									primitive.extensions.KHR_draco_mesh_compression.attributes.POSITION ?? -1,
+									primitive.extensions.KHR_draco_mesh_compression.attributes.NORMAL ?? -1,
+									primitive.extensions.KHR_draco_mesh_compression.attributes.TEXCOORD_0 ?? -1,
+									primitive.extensions.KHR_draco_mesh_compression.attributes.JOINTS_0 ?? -1,
+									primitive.extensions.KHR_draco_mesh_compression.attributes.WEIGHTS_0 ?? -1,
+									primitive.extensions.KHR_draco_mesh_compression.attributes.COLOR_0 ?? -1
+								);
 
-							int vertCount = verts.Count;
+								//Mesh mesh = loader.LoadMesh(buffer, attribs);
 
-							// Tris - (Invert all triangles. Instead of flipping each triangle, just flip the entire array. Much easier)
-							if (primitive.indices.HasValue) {
-								submeshTris.Add(new List<int>(accessors[primitive.indices.Value].ReadInt().Reverse().Select(x => x + vertStartIndex)));
+								GLTFUtilityDracoLoader.AsyncMesh asyncMesh = loader.LoadMesh(buffer, attribs);
+								if (asyncMesh == null) Debug.LogWarning("Draco mesh couldn't be loaded");
+
 								submeshTrisMode.Add(primitive.mode);
-							}
 
-							/// Normals - (X points left in GLTF)
-							if (primitive.attributes.NORMAL.HasValue) {
-								normals.AddRange(accessors[primitive.attributes.NORMAL.Value].ReadVec3().Select(v => { v.x = -v.x; return v; }));
-							}
+								// Tris
+								int vertCount = verts.Count();
+								submeshTris.Add(asyncMesh.tris.Reverse().Select(x => x + vertCount).ToList());
 
-							// Tangents - (X points left in GLTF)
-							if (primitive.attributes.TANGENT.HasValue) {
-								tangents.AddRange(accessors[primitive.attributes.TANGENT.Value].ReadVec4().Select(v => { v.y = -v.y; v.z = -v.z; return v; }));
-							}
+								verts.AddRange(asyncMesh.verts.Select(x => new Vector3(-x.x, x.y, x.z)));
+								normals.AddRange(asyncMesh.norms.Select(v => { v.x = -v.x; return v; }));
+								//tangents.AddRange(asyncMesh.tangents.Select(v => { v.y = -v.y; v.z = -v.z; return v; }));
 
-							// Vertex colors
-							if (primitive.attributes.COLOR_0.HasValue) {
-								colors.AddRange(accessors[primitive.attributes.COLOR_0.Value].ReadColor());
-							}
+								// Weights
+								if (asyncMesh.boneWeights != null) {
+									if (weights == null) weights = new List<BoneWeight>();
+									weights.AddRange(asyncMesh.boneWeights);
+								}
 
-							// Weights
-							if (primitive.attributes.WEIGHTS_0.HasValue && primitive.attributes.JOINTS_0.HasValue) {
-								Vector4[] weights0 = accessors[primitive.attributes.WEIGHTS_0.Value].ReadVec4();
-								Vector4[] joints0 = accessors[primitive.attributes.JOINTS_0.Value].ReadVec4();
-								if (joints0.Length == weights0.Length) {
-									BoneWeight[] boneWeights = new BoneWeight[weights0.Length];
-									for (int k = 0; k < boneWeights.Length; k++) {
-										NormalizeWeights(ref weights0[k]);
-										boneWeights[k].weight0 = weights0[k].x;
-										boneWeights[k].weight1 = weights0[k].y;
-										boneWeights[k].weight2 = weights0[k].z;
-										boneWeights[k].weight3 = weights0[k].w;
-										boneWeights[k].boneIndex0 = Mathf.RoundToInt(joints0[k].x);
-										boneWeights[k].boneIndex1 = Mathf.RoundToInt(joints0[k].y);
-										boneWeights[k].boneIndex2 = Mathf.RoundToInt(joints0[k].z);
-										boneWeights[k].boneIndex3 = Mathf.RoundToInt(joints0[k].w);
+								// BlendShapes not supported yet
+								/* for (int k = 0; k < mesh.blendShapeCount; k++) {
+									int frameCount = mesh.GetBlendShapeFrameCount(k);
+									BlendShape blendShape = new BlendShape();
+									blendShape.pos = new Vector3[frameCount];
+									blendShape.norm = new Vector3[frameCount];
+									blendShape.tan = new Vector3[frameCount];
+									for (int o = 0; o < frameCount; o++) {
+										mesh.GetBlendShapeFrameVertices(k, o, blendShape.pos, blendShape.norm, blendShape.tan);
 									}
-									if (weights == null) weights = new List<BoneWeight>(new BoneWeight[vertCount - boneWeights.Length]);
-									weights.AddRange(boneWeights);
-								} else Debug.LogWarning("WEIGHTS_0 and JOINTS_0 not same length. Skipped");
-							} else {
-								if (weights != null) weights.AddRange(new BoneWeight[vertCount - weights.Count]);
-							}
+									blendShapes.Add(blendShape);
+								} */
 
-							// UVs
-							ReadUVs(ref uv1, accessors, primitive.attributes.TEXCOORD_0, vertCount);
-							ReadUVs(ref uv2, accessors, primitive.attributes.TEXCOORD_1, vertCount);
-							ReadUVs(ref uv3, accessors, primitive.attributes.TEXCOORD_2, vertCount);
-							ReadUVs(ref uv4, accessors, primitive.attributes.TEXCOORD_3, vertCount);
-							ReadUVs(ref uv5, accessors, primitive.attributes.TEXCOORD_4, vertCount);
-							ReadUVs(ref uv6, accessors, primitive.attributes.TEXCOORD_5, vertCount);
-							ReadUVs(ref uv7, accessors, primitive.attributes.TEXCOORD_6, vertCount);
-							ReadUVs(ref uv8, accessors, primitive.attributes.TEXCOORD_7, vertCount);
+								// UVs
+								if (asyncMesh.uv != null) {
+									if (uv1 == null) uv1 = new List<Vector2>();
+									uv1.AddRange(asyncMesh.uv.Select(x => new Vector2(x.x, -x.y)));
+								}
+							}
+							// Load normal mesh
+							else {
+								int vertStartIndex = verts.Count;
+								submeshVertexStart.Add(vertStartIndex);
+
+								// Verts - (X points left in GLTF)
+								if (primitive.attributes.POSITION.HasValue) {
+									IEnumerable<Vector3> newVerts = accessors[primitive.attributes.POSITION.Value].ReadVec3().Select(v => { v.x = -v.x; return v; });
+									verts.AddRange(newVerts);
+								}
+
+								int vertCount = verts.Count;
+
+								// Tris - (Invert all triangles. Instead of flipping each triangle, just flip the entire array. Much easier)
+								if (primitive.indices.HasValue) {
+									submeshTris.Add(new List<int>(accessors[primitive.indices.Value].ReadInt().Reverse().Select(x => x + vertStartIndex)));
+									submeshTrisMode.Add(primitive.mode);
+								}
+
+								/// Normals - (X points left in GLTF)
+								if (primitive.attributes.NORMAL.HasValue) {
+									normals.AddRange(accessors[primitive.attributes.NORMAL.Value].ReadVec3().Select(v => { v.x = -v.x; return v; }));
+								}
+
+								// Tangents - (X points left in GLTF)
+								if (primitive.attributes.TANGENT.HasValue) {
+									tangents.AddRange(accessors[primitive.attributes.TANGENT.Value].ReadVec4().Select(v => { v.y = -v.y; v.z = -v.z; return v; }));
+								}
+
+								// Vertex colors
+								if (primitive.attributes.COLOR_0.HasValue) {
+									colors.AddRange(accessors[primitive.attributes.COLOR_0.Value].ReadColor());
+								}
+
+								// Weights
+								if (primitive.attributes.WEIGHTS_0.HasValue && primitive.attributes.JOINTS_0.HasValue) {
+									Vector4[] weights0 = accessors[primitive.attributes.WEIGHTS_0.Value].ReadVec4();
+									Vector4[] joints0 = accessors[primitive.attributes.JOINTS_0.Value].ReadVec4();
+									if (joints0.Length == weights0.Length) {
+										BoneWeight[] boneWeights = new BoneWeight[weights0.Length];
+										for (int k = 0; k < boneWeights.Length; k++) {
+											NormalizeWeights(ref weights0[k]);
+											boneWeights[k].weight0 = weights0[k].x;
+											boneWeights[k].weight1 = weights0[k].y;
+											boneWeights[k].weight2 = weights0[k].z;
+											boneWeights[k].weight3 = weights0[k].w;
+											boneWeights[k].boneIndex0 = Mathf.RoundToInt(joints0[k].x);
+											boneWeights[k].boneIndex1 = Mathf.RoundToInt(joints0[k].y);
+											boneWeights[k].boneIndex2 = Mathf.RoundToInt(joints0[k].z);
+											boneWeights[k].boneIndex3 = Mathf.RoundToInt(joints0[k].w);
+										}
+										if (weights == null) weights = new List<BoneWeight>(new BoneWeight[vertCount - boneWeights.Length]);
+										weights.AddRange(boneWeights);
+									} else Debug.LogWarning("WEIGHTS_0 and JOINTS_0 not same length. Skipped");
+								} else {
+									if (weights != null) weights.AddRange(new BoneWeight[vertCount - weights.Count]);
+								}
+
+								// UVs
+								ReadUVs(ref uv1, accessors, primitive.attributes.TEXCOORD_0, vertCount);
+								ReadUVs(ref uv2, accessors, primitive.attributes.TEXCOORD_1, vertCount);
+								ReadUVs(ref uv3, accessors, primitive.attributes.TEXCOORD_2, vertCount);
+								ReadUVs(ref uv4, accessors, primitive.attributes.TEXCOORD_3, vertCount);
+								ReadUVs(ref uv5, accessors, primitive.attributes.TEXCOORD_4, vertCount);
+								ReadUVs(ref uv6, accessors, primitive.attributes.TEXCOORD_5, vertCount);
+								ReadUVs(ref uv7, accessors, primitive.attributes.TEXCOORD_6, vertCount);
+								ReadUVs(ref uv8, accessors, primitive.attributes.TEXCOORD_7, vertCount);
+							}
 						}
 
 						bool hasTargetNames = gltfMesh.extras != null && gltfMesh.extras.targetNames != null;
@@ -269,7 +330,7 @@ namespace Siccity.GLTFUtility {
 			private List<GLTFMesh> meshes;
 			private GLTFMaterial.ImportTask materialTask;
 
-			public ImportTask(List<GLTFMesh> meshes, GLTFAccessor.ImportTask accessorTask, GLTFMaterial.ImportTask materialTask, ImportSettings importSettings) : base(accessorTask, materialTask) {
+			public ImportTask(List<GLTFMesh> meshes, GLTFAccessor.ImportTask accessorTask, GLTFBufferView.ImportTask bufferViewTask, GLTFMaterial.ImportTask materialTask, ImportSettings importSettings) : base(accessorTask, materialTask) {
 				this.meshes = meshes;
 				this.materialTask = materialTask;
 
@@ -278,7 +339,7 @@ namespace Siccity.GLTFUtility {
 
 					meshData = new MeshData[meshes.Count];
 					for (int i = 0; i < meshData.Length; i++) {
-						meshData[i] = new MeshData(meshes[i], accessorTask.Result);
+						meshData[i] = new MeshData(meshes[i], accessorTask.Result, bufferViewTask.Result);
 					}
 				});
 			}

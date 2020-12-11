@@ -9,6 +9,7 @@ third-parties for commercial purposes without written permission of ARWAY Ltd.
 ===============================================================================*/
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace Arway
 {
@@ -30,7 +31,8 @@ namespace Arway
     [Serializable]
     public class LocalizationRequest
     {
-        public int cloud_Id;
+
+        public List<int> cloud_Ids;
         public int width;
         public int height;
         public int channel;
@@ -49,7 +51,7 @@ namespace Arway
         public bool poseAvailable;
         public int counter;
         public float[] pose;
-
+        public int cloudid;
         public string isTrackMonocular;
         public string message;
 
@@ -92,6 +94,7 @@ namespace Arway
         public GlbModels[] GlbModels;
         public Texts[] Texts;
 
+        public CloudMaps[] CloudMaps;
 
     }
 
@@ -162,6 +165,17 @@ namespace Arway
         public Scale Scale;
     }
 
+    [Serializable]
+    public class CloudMaps
+    {
+        public string id;
+        public int pcd_id;
+        public string name;
+        public string link;
+        public Position Position;
+        public Rotation Rotation;
+        public Scale Scale;
+    }
 
     [Serializable]
     public class Position
@@ -182,9 +196,9 @@ namespace Arway
     [Serializable]
     public class Scale
     {
-        public int scaX;
-        public int scaY;
-        public int scaZ;
+        public double scaX;
+        public double scaY;
+        public double scaZ;
     }
 
     [Serializable]
@@ -204,5 +218,13 @@ namespace Arway
         public string uploaded;
     }
 
+
+    [Serializable]
+    public class CloudMapOffset
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+
+    }
 
 }
