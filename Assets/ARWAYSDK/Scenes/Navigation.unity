@@ -2432,7 +2432,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Sdk: {fileID: 8345762997811874154}
-  map_id: 915460
+  map_id: 
   m_ARSpace: {fileID: 431148030}
   wayPoint: {fileID: 9106262945655943445, guid: 12d8bdff5e9774f22a6046720b0c0b4a,
     type: 3}
@@ -2443,7 +2443,7 @@ MonoBehaviour:
   textPOI: {fileID: 4223783571021706217, guid: 9cb0eb9b4733b4077b2ba8c411d5494e, type: 3}
   nodeList: []
   dropdown: {fileID: 248095389}
-  mapped_Cloud_Id: 499
+  mapped_Cloud_Id: 
   poseSetterGO: {fileID: 765274134}
   RunButton: {fileID: 1771211232}
   loaderPanel: {fileID: 1805692487}

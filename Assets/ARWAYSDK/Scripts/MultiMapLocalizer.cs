@@ -48,12 +48,17 @@ namespace Arway
 
         public List<int> cloudMaps = new List<int>();
 
+        string sessionCookieString = "";
+
+
         /// <summary>
         /// Start this instance.
         /// </summary>
         void Start()
         {
             m_Sdk = ArwaySDK.Instance;
+            sessionCookieString = PlayerPrefs.GetString("COOKIE");
+            //Debug.Log("Cookies: " + sessionCookieString);
 
             if (string.IsNullOrEmpty(m_Sdk.developerToken))
             {
@@ -157,17 +162,37 @@ namespace Arway
                 www.method = UnityWebRequest.kHttpVerbPOST;
                 www.SetRequestHeader("Content-Type", "application/json");
                 www.SetRequestHeader("Accept", "application/json");
+
+                if (sessionCookieString.Length > 0)
+                {
+                    //Debug.Log("Saved Cookie >> " + sessionCookieString);               
+                    www.SetRequestHeader("Cookie", sessionCookieString);
+                }
+
                 yield return www.SendWebRequest();
                 Debug.Log("***************");
 
                 if (www.error != null)
                 {
-                    
+
                     loaderPanel.SetActive(false);
 
                 }
                 else
                 {
+                    //Try to get a cookie and set in next API calls
+                    if (www.GetResponseHeaders().ContainsKey("SET-COOKIE"))
+                    {
+                        if (www.GetResponseHeaders().TryGetValue("SET-COOKIE", out string result))
+                        {
+                            if (sessionCookieString.Length == 0)
+                            {
+                                sessionCookieString = result;
+                                PlayerPrefs.SetString("COOKIE", sessionCookieString);
+                            }
+                        }
+                    }
+
                     loaderPanel.SetActive(false);
 
                     Debug.Log("All OK");
@@ -181,7 +206,7 @@ namespace Arway
                     if (localization.poseAvailable == true)
                     {
                         counts += 1;
-                        poseSetterGO.GetComponent<PoseSetter>().poseHandler(localization);
+                        poseSetterGO.GetComponent<PoseSetter>().poseHandlerMultiMap(localization);
 
                         if (vibrateOnLocalize)
                             Handheld.Vibrate();

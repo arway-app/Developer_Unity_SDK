@@ -51,12 +51,17 @@ namespace Arway
 
         public List<int> cloudMaps = new List<int>();
 
+        string sessionCookieString = "";
+
         /// <summary>
         /// Start this instance.
         /// </summary>
         void Start()
         {
             m_Sdk = ArwaySDK.Instance;
+
+            sessionCookieString = PlayerPrefs.GetString("COOKIE");
+            //Debug.Log("Cookies: " + sessionCookieString);
 
             if (m_Sdk.developerToken != null && m_Sdk.developerToken.Length > 0)
             {
@@ -156,6 +161,16 @@ namespace Arway
                 www.method = UnityWebRequest.kHttpVerbPOST;
                 www.SetRequestHeader("Content-Type", "application/json");
                 www.SetRequestHeader("Accept", "application/json");
+
+                if (sessionCookieString.Length > 0)
+                {
+                    //Debug.Log("Saved Cookie >> " + sessionCookieString);
+                    www.SetRequestHeader("Cookie", sessionCookieString);
+                }
+
+                // Get and Set Cookies 
+                www.GetResponseHeaders();
+
                 yield return www.SendWebRequest();
                 Debug.Log("***************");
 
@@ -166,6 +181,19 @@ namespace Arway
                 }
                 else
                 {
+                    //Try to get a cookie and set in next API calls
+                    if (www.GetResponseHeaders().ContainsKey("SET-COOKIE"))
+                    {
+                        if (www.GetResponseHeaders().TryGetValue("SET-COOKIE", out string result))
+                        {
+                            if (sessionCookieString.Length == 0)
+                            {
+                                sessionCookieString = result;
+                                PlayerPrefs.SetString("COOKIE", sessionCookieString);
+                            }
+                        }
+                    }
+
                     loaderPanel.SetActive(false);
 
                     Debug.Log("All OK");
