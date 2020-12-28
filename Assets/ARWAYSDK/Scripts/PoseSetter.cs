@@ -51,7 +51,7 @@ namespace Arway
 
 
         }
-        // pose setter for single map
+
         public void poseHandler(LocalizationResponse respose)
         {
             Matrix4x4 cloudpose = new Matrix4x4();
