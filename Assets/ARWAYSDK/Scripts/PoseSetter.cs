@@ -17,6 +17,7 @@ namespace Arway
         [SerializeField]
         public GameObject ARSpace;
 
+
         /// <summary>
         /// 
         /// </summary>
@@ -35,7 +36,7 @@ namespace Arway
 
             Vector3 pos = new Vector3(cloudpose[0, 3] * -1f, cloudpose[1, 3], cloudpose[2, 3]);
 
-            Quaternion rot = Quaternion.Euler(cloudpose.rotation.eulerAngles.x, (360 - cloudpose.rotation.eulerAngles.y) % 360, cloudpose.rotation.eulerAngles.z);
+            Quaternion rot = Quaternion.Euler((360 - cloudpose.rotation.eulerAngles.x) % 360, (360 - cloudpose.rotation.eulerAngles.y) % 360, cloudpose.rotation.eulerAngles.z);
             Matrix4x4 cloud = Matrix4x4.TRS(pos, rot, Vector3.one);
 
 
@@ -63,20 +64,20 @@ namespace Arway
 
             Vector3 pos = new Vector3(cloudpose[0, 3] * -1f, cloudpose[1, 3], cloudpose[2, 3]);
 
-            Quaternion rot = Quaternion.Euler(cloudpose.rotation.eulerAngles.x, (360 - cloudpose.rotation.eulerAngles.y) % 360, cloudpose.rotation.eulerAngles.z);
-            
+            Quaternion rot = Quaternion.Euler((360 - cloudpose.rotation.eulerAngles.x) % 360, (360 - cloudpose.rotation.eulerAngles.y) % 360, cloudpose.rotation.eulerAngles.z);
+           
+
             Matrix4x4 cloud = Matrix4x4.TRS(pos, rot, Vector3.one);
             Matrix4x4 cameratracker = Matrix4x4.TRS(Camera.main.transform.position, Camera.main.transform.rotation, Vector3.one);
 
             
             Matrix4x4 result = cameratracker * cloud.inverse;
 
+
             ARSpace.transform.rotation = result.rotation;
             ARSpace.transform.position = new Vector3(result[0, 3], result[1, 3], result[2, 3]);
 
         }
-
-
 
         public void GetGlobalPose(Matrix4x4 Cloudlocal_pose, Matrix4x4 cloudMap_offset)
         {

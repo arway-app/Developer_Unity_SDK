@@ -53,6 +53,13 @@ namespace Arway
 
         string sessionCookieString = "";
 
+        [Header("ARSpace GameObject")]
+        [SerializeField]
+        private GameObject ArSpace;
+
+        [SerializeField]
+        private bool showContentBeforeLocalization;
+
         /// <summary>
         /// Start this instance.
         /// </summary>
@@ -77,7 +84,7 @@ namespace Arway
             cloudDropdown.options.Clear();
             cloudDropdown.options.Add(new TMP_Dropdown.OptionData("Select Cloud Map"));
 
-
+            ArSpace.SetActive(showContentBeforeLocalization);
         }
 
         /// <summary>
@@ -214,6 +221,12 @@ namespace Arway
                     }
 
                     loc_attempts_txt.text = "Localization attempts:  " + counts + " / " + requestCount;
+
+                    // show ARSpace GameObject if counts > 0 
+                    if (counts > 0)
+                    {
+                        ArSpace.SetActive(true);
+                    }
                 }
             }
         }
@@ -226,6 +239,9 @@ namespace Arway
         {
             if (val > 0)
             {
+                //remove ARSpace GO from scene if changing cloud map.
+                //ArSpace.SetActive(false);
+
                 counts = 0;
                 requestCount = 0;
                 loc_attempts_txt.text = "Localization attempts:  " + counts + " / " + requestCount;

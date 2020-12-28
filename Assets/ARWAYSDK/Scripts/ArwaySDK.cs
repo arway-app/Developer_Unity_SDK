@@ -16,7 +16,7 @@ namespace Arway
 {
 	public class ArwaySDK : MonoBehaviour
 	{
-        public static string sdkVersion = "0.0.5";
+        public static string sdkVersion = "0.0.6";
 
         private static ArwaySDK instance = null;
 

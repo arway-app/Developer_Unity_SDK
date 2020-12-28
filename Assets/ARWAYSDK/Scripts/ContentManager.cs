@@ -28,13 +28,6 @@ namespace Arway
     {
         public ArwaySDK m_Sdk = null;
 
-        /// <summary>
-        /// The map identifier.
-        /// </summary>
-        public string map_id;
-
-        public GameObject m_ARSpace;
-
         public GameObject wayPoint;
         public GameObject destination;
         public GameObject imagesPOI;
@@ -46,10 +39,16 @@ namespace Arway
 
         private string filePath = "";
 
-        public TMP_Dropdown dropdown;
+        [Header("Content Manager")]
+        [SerializeField]
+        private GameObject m_ARSpace;
+        [SerializeField]
+        private GameObject destinationDropdown;
+        private TMP_Dropdown dropdown;
 
         // -------------------------  
         [Header("Localization")]
+        public string map_id;
         public string mapped_Cloud_Id;
 
         [SerializeField]
@@ -77,11 +76,18 @@ namespace Arway
         Utils utils = new Utils();
         string sessionCookieString = "";
 
+        private bool isReadyToLocalize;
+
+
+        [Header("Show/Hide Content")]
+        [SerializeField]
+        private bool showContentBeforeLocalization;
+
         void Start()
         {
             sessionCookieString = PlayerPrefs.GetString("COOKIE");
 
-            dropdown = dropdown.GetComponent<TMP_Dropdown>();
+            dropdown = destinationDropdown.GetComponent<TMP_Dropdown>();
             dropdown.options.Clear();
             dropdown.options.Add(new TMP_Dropdown.OptionData("Select Destination"));
 
@@ -90,28 +96,30 @@ namespace Arway
             navController = this.GetComponent<NavController>();
 
             cloudMaps = new List<int>();
-            cloudMaps.Add(int.Parse(mapped_Cloud_Id));
+
+            if (mapped_Cloud_Id.Length > 0)
+                cloudMaps.Add(int.Parse(mapped_Cloud_Id));
 
 
-            if (map_id.Length > 0)
+            m_Sdk = ArwaySDK.Instance;
+
+            if (m_Sdk.developerToken != null && m_Sdk.developerToken.Length > 0)
             {
+                isReadyToLocalize = CheckMapIdDetails();
 
-                m_Sdk = ArwaySDK.Instance;
-
-                if (m_Sdk.developerToken != null && m_Sdk.developerToken.Length > 0)
-                {
+                if (isReadyToLocalize)
                     StartCoroutine(GetMapData(map_id));
-                }
-                else
-                {
-                    Debug.Log("***********\tDeveloper Token not valid!\t***********");
-                }
+
+                m_ARSpace.SetActive(showContentBeforeLocalization);
+                destinationDropdown.SetActive(showContentBeforeLocalization);
+
             }
             else
             {
-                Debug.Log(" Map Id null..");
-                NotificationManager.Instance.GenerateWarning("Error: " + "Map Id is null!!");
+                Debug.Log("***********\tDeveloper Token not valid!\t***********");
+                NotificationManager.Instance.GenerateWarning("Error: " + "Invalid Developer Token!!");
             }
+
 
             if (m_ARSpace == null)
             {
@@ -124,6 +132,23 @@ namespace Arway
 
         }
 
+        private bool CheckMapIdDetails()
+        {
+            if (map_id.Length > 0)
+            {
+                if (mapped_Cloud_Id.Length == 0)
+                {
+                    NotificationManager.Instance.GenerateWarning("Error: " + "Mapped Cloud Id is null!!");
+                    Debug.Log("***********\tMapped Cloud Id is null !!\t***********");
+                    return false;
+                }
+                return true;
+            }
+            NotificationManager.Instance.GenerateWarning("Error: " + "Map Id is null!!");
+            Debug.Log("***********\tMap Id is null !!\t***********");
+            return false;
+        }
+
 
         /// <summary>
         /// Gets the map data.
@@ -132,6 +157,8 @@ namespace Arway
         /// <param name="map_id">Map identifier.</param>
         IEnumerator GetMapData(string map_id)
         {
+            NotificationManager.Instance.GenerateNotification("Getting Map data..");
+
             using (UnityWebRequest www = UnityWebRequest.Get(m_Sdk.ContentServer + EndPoint.MAP_DATA + "index.php?map_id=" + map_id))
             {
                 www.SetRequestHeader("dev-token", m_Sdk.developerToken);
@@ -247,9 +274,15 @@ namespace Arway
         }
 
 
-
         public unsafe void RequestLocalization()
         {
+            if (!isReadyToLocalize)
+            {
+                NotificationManager.Instance.GenerateError("Error: " + "NOT READY TO LOCALIZE !!");
+                Debug.Log("********  NOT READY TO LOCALIZE !!   *******");
+                return;
+            }
+
             XRCameraImage image;
             XRCameraIntrinsics intr;
             ARCameraManager cameraManager = m_Sdk.cameraManager;
@@ -374,6 +407,14 @@ namespace Arway
                     }
 
                     loc_attempts_txt.text = "Localization attempts:  " + counts + " / " + requestCount;
+
+                    // show ARSpace GameObject if counts > 0 
+                    if (counts > 0)
+                    {
+                        m_ARSpace.SetActive(true);
+                        destinationDropdown.SetActive(true);
+
+                    }
                 }
             }
         }

@@ -50,6 +50,16 @@ namespace Arway
 
         string sessionCookieString = "";
 
+        [Header("Content Manager")]
+        [SerializeField]
+        private GameObject ArSpace;
+        [SerializeField]
+        private GameObject destinationDropdown;
+
+        [Header("Show/Hide Content")]
+        [SerializeField]
+        private bool showContentBeforeLocalization;
+
 
         /// <summary>
         /// Start this instance.
@@ -65,6 +75,8 @@ namespace Arway
                 NotificationManager.Instance.GenerateError("Invalid Developer Token!");
             }
 
+            ArSpace.SetActive(showContentBeforeLocalization);
+            destinationDropdown.SetActive(showContentBeforeLocalization);
         }
 
 
@@ -214,6 +226,13 @@ namespace Arway
                     }
 
                     loc_attempts_txt.text = "Localization attempts:  " + counts + " / " + requestCount;
+
+                    // show ARSpace GameObject if counts > 0 
+                    if (counts > 0)
+                    {
+                        ArSpace.SetActive(true);
+                        destinationDropdown.SetActive(true);
+                    }
                 }
             }
         }

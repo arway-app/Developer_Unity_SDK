@@ -99,22 +99,27 @@ namespace Arway
 
             //get path from A* algorithm
 
-            // Debug.Log(closestNode);
-            //Debug.Log(target);
-
             path = this.gameObject.GetComponent<AStar>().FindPath(closestNode, target, allnodes);
 
-            //Debug.Log(path);
-            foreach (Node obj in path)
+            if (path != null)
             {
-                corners.Add(new Vector3(obj.gameObject.transform.position.x, obj.gameObject.transform.position.y, obj.gameObject.transform.position.z));
-
-                if (showPath)
+                //Debug.Log(path);
+                foreach (Node obj in path)
                 {
-                    m_navigationPath.GeneratePath(corners, Vector3.up);
-                    m_navigationPath.pathWidth = 0.3f;
-                    m_navigationPathObject.SetActive(true);
+                    corners.Add(new Vector3(obj.gameObject.transform.position.x, obj.gameObject.transform.position.y, obj.gameObject.transform.position.z));
+
+                    if (showPath)
+                    {
+                        m_navigationPath.GeneratePath(corners, Vector3.up);
+                        m_navigationPath.pathWidth = 0.3f;
+                        m_navigationPathObject.SetActive(true);
+                    }
                 }
+            }
+            else
+            {
+                Debug.Log("Waypoints missing for the selected Destination!!");
+                //NotificationManager.Instance.GenerateWarning("Waypoints missing for the selected Destination!!");
             }
         }
     }

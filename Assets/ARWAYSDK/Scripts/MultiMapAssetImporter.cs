@@ -40,7 +40,8 @@ namespace Arway
 
         private string filePath = "";
 
-        public TMP_Dropdown dropdown;
+        public GameObject destinationDropdown;
+        private TMP_Dropdown dropdown;
 
         public MultiMapLocalizer multiMapLocalizer;
 
@@ -51,9 +52,11 @@ namespace Arway
         void Start()
         {
            
-            dropdown = dropdown.GetComponent<TMP_Dropdown>();
+            dropdown = destinationDropdown.GetComponent<TMP_Dropdown>();
             dropdown.options.Clear();
             dropdown.options.Add(new TMP_Dropdown.OptionData("Select Destination"));
+
+            destinationDropdown.SetActive(false);
 
             map_id = PlayerPrefs.GetString("MAP_ID");
 
@@ -137,6 +140,12 @@ namespace Arway
                         if (mapAssetData.Destinations != null)
                         {
                             Debug.Log("Total Destinations: " + mapAssetData.Destinations.Length);
+
+                            //if (mapAssetData.Destinations.Length > 0)
+                            //{
+                            //    destinationDropdown.SetActive(true);
+                            //}
+
                             for (int i = 0; i < mapAssetData.Destinations.Length; i++)
                             {
                                 Vector3 pos = utils.getPose(mapAssetData.Destinations[i].Position);
@@ -273,8 +282,7 @@ namespace Arway
 
         public IEnumerator loadPoiImage(String url, Vector3 pos, Vector3 rot, Vector3 scale, String name)
         {
-           // Debug.Log("URL>>>" + url);
-
+           
             var imgpoi = Instantiate(imagesPOI);
             imgpoi.transform.SetParent(m_ARSpace.transform);
             imgpoi.transform.localPosition = pos;
