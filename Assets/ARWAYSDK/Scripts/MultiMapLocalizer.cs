@@ -87,12 +87,12 @@ namespace Arway
         {
             Debug.Log(" >>>>>>   RequestLocalization  <<<<<<<" + cloudMaps.Count);
 
-            XRCameraImage image;
+            
             XRCameraIntrinsics intr;
             ARCameraManager cameraManager = m_Sdk.cameraManager;
             var cameraSubsystem = cameraManager.subsystem;
 
-            if (cameraSubsystem != null && cameraSubsystem.TryGetLatestImage(out image) && cameraSubsystem.TryGetIntrinsics(out intr))
+            if (cameraSubsystem != null && cameraSubsystem.TryGetIntrinsics(out intr) && cameraManager.TryAcquireLatestCpuImage(out XRCpuImage image))
             {
 
                 //Debug.Log("Cloud ID >>>>>>>>>>>>>>> : " + cloud_id);
@@ -106,7 +106,7 @@ namespace Arway
 
                 // Convert the image to format, flipping the image across the Y axis.
                 // We can also get a sub rectangle, but we'll get the full image here.
-                var conversionParams = new XRCameraImageConversionParams(image, format, CameraImageTransformation.MirrorX);
+                var conversionParams = new XRCpuImage.ConversionParams(image, format, XRCpuImage.Transformation.MirrorX);
 
                 // Texture2D allows us write directly to the raw texture data
                 // This allows us to do the conversion in-place without making any copies.

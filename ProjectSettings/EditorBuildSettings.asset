@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/ARWAYSDK/Scenes/Navigation.unity
     guid: 02e57dcc5a5534a3990b205e0f132d3a
   - enabled: 0
@@ -17,10 +17,16 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/ARWAYSDK/Scenes/Character Navigation.unity
     guid: 93e36b7bbabf55642b6e14fae7099f23
-  - enabled: 1
+  - enabled: 0
     path: Assets/ARWAYSDK/Scenes/MultiMap_Localization.unity
     guid: 2fbc0256c3b484971bcff345343fad4f
   - enabled: 0
     path: Assets/ARWAYSDK/Scenes/NonARCore_Sample/Localization_Non_ARFoundation.unity
     guid: 93576cd3e923b49da9d43cdb2fde1b0e
-  m_configObjects: {}
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: dd907ef1f683d4448970b9472407a966,
+      type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 9122e9a7d2b1f4887b3ca8dc5ef5d6fe,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f4165b7c6181c49f2aee9fe133ef08c2,
+      type: 2}

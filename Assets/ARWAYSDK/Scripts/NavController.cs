@@ -37,8 +37,20 @@ namespace Arway
 
         public bool showPath = true;
 
+        public TMP_Text m_DistanceLeft, m_TimeLeft;
+
+        private GameObject m_MainCamera;
+        private bool destinationUpdated = false, isNavigating = false;
+        private float distanceLeft = 0f;
+        private float walkingSpeed = 1.0f;
+        private Vector3 lastPos;
+
         void Start()
         {
+            m_MainCamera = Camera.main.gameObject;
+            m_DistanceLeft.gameObject.SetActive(false);
+            m_TimeLeft.gameObject.SetActive(false);
+
             dropdown = dropdown.GetComponent<TMP_Dropdown>();
 
             if (m_navigationPathPrefab != null)
@@ -65,6 +77,7 @@ namespace Arway
 
             if (val > 0)
             {
+                destinationUpdated = true;
                 PlayerPrefs.SetString("DEST_NAME", dropdown.options[val].text);
                 InvokeRepeating("StartNavigation", 1.0f, 0.5f);
             }
@@ -121,6 +134,80 @@ namespace Arway
                 Debug.Log("Waypoints missing for the selected Destination!!");
                 //NotificationManager.Instance.GenerateWarning("Waypoints missing for the selected Destination!!");
             }
+        }
+
+        private void Update()
+        {
+            distanceLeft = 0f;
+
+            if (isNavigating && path.Count >= 1)
+            {
+                m_DistanceLeft.gameObject.SetActive(true);
+                m_TimeLeft.gameObject.SetActive(true);
+
+                distanceLeft += Vector3.Distance(path[0].gameObject.transform.position, m_MainCamera.transform.position);
+
+                if (path.Count >= 2)
+                {
+                    for (int currNode = 0; currNode < path.Count - 1; currNode += 1)
+                    {
+                        distanceLeft += Vector3.Distance(path[currNode].gameObject.transform.position, path[currNode + 1].gameObject.transform.position);
+                    }
+                }
+
+                if (distanceLeft < 0.25f)
+                {
+                    m_DistanceLeft.text = "<u>Distance:</u> 0 m";
+                    m_TimeLeft.text = "<u>ETA:</u> 0 sec";
+
+                    isNavigating = false;
+                }
+                else
+                {
+                    m_DistanceLeft.text = "<u>Distance:</u> " + distanceLeft.ToString("F1") + " m";
+
+                    var timeLeft = Mathf.RoundToInt(distanceLeft / walkingSpeed);
+
+                    if (timeLeft >= 60)
+                    {
+                        m_TimeLeft.text = "<u>ETA:</u> " + timeLeft / 60 + " min " + timeLeft % 60 + " sec";
+                    }
+                    else
+                    {
+                        m_TimeLeft.text = "<u>ETA:</u> " + timeLeft % 60 + " sec";
+                    }
+                }
+            }
+
+            if (destinationUpdated)
+            {
+                isNavigating = true;
+                destinationUpdated = false;
+
+                StartCoroutine(CalculateWalkingSpeed());
+            }
+        }
+
+        IEnumerator CalculateWalkingSpeed()
+        {
+            if (isNavigating && path.Count >= 1)
+            {
+                var currSpeed = Vector3.Distance(m_MainCamera.transform.position, lastPos);
+
+                lastPos = m_MainCamera.transform.position;
+
+                if (currSpeed < 0.5f)
+                {
+                    walkingSpeed = 0.5f;
+                }
+                else
+                {
+                    walkingSpeed = currSpeed;
+                }
+            }
+
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(CalculateWalkingSpeed());
         }
     }
 }
