@@ -17,7 +17,7 @@ AR Foundation 4 and above
 Example scene to show AR nanigation, paths and POI's can be edited in Real-time using Web Studio.
 
 ### MultiMap Localization 
-Example scene to show how to use multiple point cloud maps for localization in navigation experience, multiple point cloud maps can be Added and arranged from Web Studio.
+Example scene to show how to use multiple point cloud maps for localization in navigation experience, multiple point cloud maps can be Added and arranged from Web Studio (MAX 5 point cloud maps currently supported).
 
 ### Character Navigation 
 Example scene to show AR nanigation through a virtual character users can follow the character to reach destination. 
