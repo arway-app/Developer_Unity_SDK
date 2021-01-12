@@ -26,4 +26,9 @@ Example scene to show AR nanigation through a virtual character users can follow
 Example scene to show On-Cloud Localization.
 
 ### Content 
-Example scene to show how to parse Content from Web studio (currently support waypoints, destination, images, text, GLB Model)
+Example scene to show how to parse Content from Web studio (currently support waypoints, destination, images, text, GLB Model).
+
+### NonARCore (In development)
+Example scene to show how to build ARwayKit SDK feature on Non-ARCore supported android phones.
+
+
