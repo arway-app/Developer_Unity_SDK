@@ -9,8 +9,21 @@ https://developer.arway.app/sign-up/
 
 ## Compatibility
 Unity 2019.4 LTS and above 
+
 AR Foundation 4 and above
 
 # Sample Scenes
 ### Navigation 
-Example scene to show AR nanigation, the paths and POI's can be edited in Real-time using Web Studio
+Example scene to show AR nanigation, paths and POI's can be edited in Real-time using Web Studio.
+
+### MultiMap Localization 
+Example scene to show how to use multiple point cloud maps for localization in navigation experience, multiple point cloud maps can be Added and arranged from Web Studio.
+
+### Character Navigation 
+Example scene to show AR nanigation through a virtual character users can follow the character to reach destination. 
+
+### Localization
+Example scene to show On-Cloud Localization.
+
+### Content 
+Example scene to show how to parse Content from Web studio (currently support waypoints, destination, images, text, GLB Model)
