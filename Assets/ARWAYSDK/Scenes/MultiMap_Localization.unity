@@ -1345,7 +1345,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.00024414062}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &669966184
@@ -2300,7 +2300,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 182384197}
   m_HandleRect: {fileID: 182384196}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4700,6 +4700,7 @@ MonoBehaviour:
   ArSpace: {fileID: 431148030}
   destinationDropdown: {fileID: 248095387}
   showContentBeforeLocalization: 0
+  ARCamera: {fileID: 484831789}
 --- !u!114 &4665284271080193081
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1826,6 +1826,7 @@ MonoBehaviour:
   vibrateOnLocalize: 1
   loc_attempts_txt: {fileID: 2021760230}
   cloudMaps: 
+  ARCamera: {fileID: 484831789}
 --- !u!225 &4700326431296077273
 CanvasGroup:
   m_ObjectHideFlags: 0

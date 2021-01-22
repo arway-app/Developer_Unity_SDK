@@ -18,12 +18,8 @@ namespace Arway
         public GameObject ARSpace;
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="respose"></param>
-        /// <param name="cloudid"></param>
-        public void poseHandlerMultiMap(LocalizationResponse respose)
+      
+        public void poseHandlerMultiMap(LocalizationResponse respose, Vector3 camPos, Quaternion camRot)
         {
             Matrix4x4 cloudpose = new Matrix4x4();
             cloudpose = Matrix4x4.identity;
@@ -46,14 +42,17 @@ namespace Arway
                 Quaternion Mapoffsetrotation = MultiMapAssetImporter.mapIdToOffset[cloudid].rotation;
                 Matrix4x4 cloudMapOffset = Matrix4x4.TRS(Mapoffsetposition, Mapoffsetrotation, Vector3.one);
 
-                GetGlobalPose(cloud, cloudMapOffset);
+                GetGlobalPose(cloud,cloudMapOffset,camPos,camRot);
             }
-
-
-
         }
 
-        public void poseHandler(LocalizationResponse respose)
+        /// <summary>
+        /// handles pose from cloud response
+        /// </summary>
+        /// <param name="respose"></param>
+        /// <param name="camPos"></param>
+        /// <param name="camRot"></param>
+        public void poseHandler(LocalizationResponse respose, Vector3 camPos, Quaternion camRot)
         {
             Matrix4x4 cloudpose = new Matrix4x4();
             cloudpose = Matrix4x4.identity;
@@ -65,24 +64,23 @@ namespace Arway
             Vector3 pos = new Vector3(cloudpose[0, 3] * -1f, cloudpose[1, 3], cloudpose[2, 3]);
 
             Quaternion rot = Quaternion.Euler((360 - cloudpose.rotation.eulerAngles.x) % 360, (360 - cloudpose.rotation.eulerAngles.y) % 360, cloudpose.rotation.eulerAngles.z);
-           
 
             Matrix4x4 cloud = Matrix4x4.TRS(pos, rot, Vector3.one);
-            Matrix4x4 cameratracker = Matrix4x4.TRS(Camera.main.transform.position, Camera.main.transform.rotation, Vector3.one);
+            Matrix4x4 requestcameratracker = Matrix4x4.TRS(camPos, camRot, Vector3.one);
 
-            
-            Matrix4x4 result = cameratracker * cloud.inverse;
-
+            Matrix4x4 result = requestcameratracker * cloud.inverse;
 
             ARSpace.transform.rotation = result.rotation;
             ARSpace.transform.position = new Vector3(result[0, 3], result[1, 3], result[2, 3]);
 
         }
 
-        public void GetGlobalPose(Matrix4x4 Cloudlocal_pose, Matrix4x4 cloudMap_offset)
+
+
+        public void GetGlobalPose(Matrix4x4 Cloudlocal_pose, Matrix4x4 cloudMap_offset, Vector3 camPos , Quaternion camRot)
         {
 
-            Matrix4x4 cameratracker = Matrix4x4.TRS(Camera.main.transform.position, Camera.main.transform.rotation, Vector3.one);
+            Matrix4x4 cameratracker = Matrix4x4.TRS(camPos, camRot, Vector3.one);
             Matrix4x4 resultpose = cloudMap_offset * Cloudlocal_pose;
             Matrix4x4 globalPose = (cameratracker) * (resultpose.inverse);
 

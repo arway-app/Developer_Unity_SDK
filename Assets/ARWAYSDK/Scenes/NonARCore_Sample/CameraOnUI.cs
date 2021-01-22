@@ -48,6 +48,9 @@ namespace Arway
 
         string sessionCookieString = "";
 
+        //AR Camera in the scene
+        public Camera ARCamera;
+
 
         void Start()
         {
@@ -110,6 +113,10 @@ namespace Arway
             lr.Camera_py = 237.1666717529297f;
             lr.version = m_Sdk.arwaysdkversion;
 
+           
+            Vector3 camPos = ARCamera.transform.position;
+            Quaternion camRot = ARCamera.transform.rotation;
+
             m_Texture = Convert_WebCamTexture_To_Texture2d(tex);
             byte[] _bytesjpg = m_Texture.EncodeToJPG();
 
@@ -121,11 +128,11 @@ namespace Arway
             loc_attempts_txt.GetComponent<TMP_Text>().enabled = true;
 
             string output = JsonUtility.ToJson(lr);
-            StartCoroutine(sendCameraImages(output));
+            StartCoroutine(sendCameraImages(output, camPos, camRot));
 
         }
 
-        IEnumerator sendCameraImages(string rawdata)
+        IEnumerator sendCameraImages(string rawdata, Vector3 camPos, Quaternion camRot)
         {
             Debug.Log("RawString: " + rawdata);
 
@@ -181,7 +188,7 @@ namespace Arway
                     {
                         counts += 1;
                         Debug.Log("Calling POSE Setter...");
-                        poseSetterGO.GetComponent<PoseSetter>().poseHandler(localization);
+                        poseSetterGO.GetComponent<PoseSetter>().poseHandler(localization, camPos, camRot);
 
                         if (vibrateOnLocalize)
                             Handheld.Vibrate();

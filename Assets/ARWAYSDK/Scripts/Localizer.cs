@@ -60,6 +60,9 @@ namespace Arway
         [SerializeField]
         private bool showContentBeforeLocalization;
 
+        //AR Camera in the scene
+        public Camera ARCamera;
+
         /// <summary>
         /// Start this instance.
         /// </summary>
@@ -113,6 +116,9 @@ namespace Arway
                 lr.Camera_py = intr.principalPoint.y;
                 lr.version = m_Sdk.arwaysdkversion;
 
+                Vector3 camPos = ARCamera.transform.position;
+                Quaternion camRot = ARCamera.transform.rotation;
+
                 var format = TextureFormat.RGB24;
 
                 if (m_Texture == null || m_Texture.width != image.width || m_Texture.height != image.height)
@@ -150,7 +156,7 @@ namespace Arway
                 loc_attempts_txt.GetComponent<TMP_Text>().enabled = true;
 
                 string output = JsonUtility.ToJson(lr);
-                StartCoroutine(sendCameraImages(output));
+                StartCoroutine(sendCameraImages(output, camPos, camRot));
 
             }
 
@@ -161,7 +167,7 @@ namespace Arway
         /// </summary>
         /// <returns>The camera images.</returns>
         /// <param name="rawdata">Rawdata.</param>
-        IEnumerator sendCameraImages(string rawdata)
+        IEnumerator sendCameraImages(string rawdata, Vector3 camPos, Quaternion camRot)
         {
             using (UnityWebRequest www = UnityWebRequest.Put(m_Sdk.localizationServer + m_Sdk.developerToken + "/" + EndPoint.REQ_POSE, rawdata))
             {
@@ -214,7 +220,7 @@ namespace Arway
                     if (localization.poseAvailable == true)
                     {
                         counts += 1;
-                        poseSetterGO.GetComponent<PoseSetter>().poseHandler(localization);
+                        poseSetterGO.GetComponent<PoseSetter>().poseHandler(localization, camPos, camRot);
 
                         if (vibrateOnLocalize)
                             Handheld.Vibrate();

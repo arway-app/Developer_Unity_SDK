@@ -368,8 +368,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UseCustomMaterial: 0
   m_CustomMaterial: {fileID: 0}
-  m_UseCustomRendererAsset: 0
-  m_CustomRendererAsset: {fileID: 0}
 --- !u!114 &484831791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,8 +380,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4966719baa26e4b0e8231a24d9bd491a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FocusMode: 1
-  m_LightEstimationMode: 0
+  m_FocusMode: -1
+  m_LightEstimationMode: -1
+  m_AutoFocus: 1
+  m_LightEstimation: 0
+  m_FacingDirection: 1
 --- !u!114 &484831792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,6 +562,7 @@ MonoBehaviour:
   cloudMaps: 
   ArSpace: {fileID: 431148030}
   showContentBeforeLocalization: 0
+  ARCamera: {fileID: 484831789}
 --- !u!1 &669966184
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,6 +607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AttemptUpdate: 1
   m_MatchFrameRate: 1
+  m_TrackingMode: 2
 --- !u!4 &669966187
 Transform:
   m_ObjectHideFlags: 0
