@@ -60,6 +60,9 @@ namespace Arway
         [SerializeField]
         private bool showContentBeforeLocalization;
 
+        //AR Camera in the scene
+        public Camera ARCamera;
+
 
         /// <summary>
         /// Start this instance.
@@ -149,9 +152,13 @@ namespace Arway
                 lr.image = Convert.ToBase64String(_bytesjpg);
                 lr.timestamp = image.timestamp;
 
+
+                Vector3 camPos = ARCamera.transform.position;
+                Quaternion camRot = ARCamera.transform.rotation;
+
                 string loc_request_data = JsonUtility.ToJson(lr);
 
-                StartCoroutine(sendCameraImages(loc_request_data));
+                StartCoroutine(sendCameraImages(loc_request_data, camPos, camRot));
 
             }
         }
@@ -163,7 +170,7 @@ namespace Arway
         /// <returns>The camera images.</returns>
         /// <param name="rawdata">Rawdata.</param>
         /// <param name="cloud_id">Cloud identifier.</param>
-        IEnumerator sendCameraImages(string rawdata)
+        IEnumerator sendCameraImages(string rawdata, Vector3 camPos, Quaternion camRot)
         {
 
             loaderText.text = "Localizing...";
@@ -218,7 +225,7 @@ namespace Arway
                     if (localization.poseAvailable == true)
                     {
                         counts += 1;
-                        poseSetterGO.GetComponent<PoseSetter>().poseHandlerMultiMap(localization);
+                        poseSetterGO.GetComponent<PoseSetter>().poseHandlerMultiMap(localization, camPos, camRot);
 
                         if (vibrateOnLocalize)
                             Handheld.Vibrate();
