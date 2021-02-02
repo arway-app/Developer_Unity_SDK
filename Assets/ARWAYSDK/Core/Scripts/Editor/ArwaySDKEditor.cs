@@ -28,10 +28,16 @@ namespace Arway
         }
 
         //Add a menu item to link to slack.
-        [MenuItem("Arway SDK/Help...")]
+        [MenuItem("Arway SDK/Help")]
         static void HelpOutput()
         {
             Application.OpenURL("https://docs.arway.app/arway-sdk/quickstart-in-unity");
+        }
+
+        [MenuItem("Arway SDK/Support")]
+        static void Support()
+        {
+            Application.OpenURL("https://discord.com/invite/5mG9ewM?utm_source=unity&utm_medium=button&utm_campaign=customers");
         }
 
         void OnGUI()
