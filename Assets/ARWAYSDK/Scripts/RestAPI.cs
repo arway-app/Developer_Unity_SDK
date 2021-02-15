@@ -46,6 +46,23 @@ namespace Arway
     }
 
     [Serializable]
+    public class LocalizationRequestwithToken
+    {
+        public string developer_token;
+        public List<int> cloud_Ids;
+        public int width;
+        public int height;
+        public int channel;
+        public float Camera_fx;
+        public float Camera_fy;
+        public float Camera_px;
+        public float Camera_py;
+        public string image;
+        public double timestamp;
+        public string version;
+    }
+
+    [Serializable]
     public class LocalizationResponse
     {
         public bool poseAvailable;
@@ -221,6 +238,15 @@ namespace Arway
 
     [Serializable]
     public class CloudMapOffset
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+
+    }
+
+
+    [Serializable]
+    public class ArCameraOffset
     {
         public Vector3 position;
         public Quaternion rotation;

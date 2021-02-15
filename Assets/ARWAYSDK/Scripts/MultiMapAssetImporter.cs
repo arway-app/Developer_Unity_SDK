@@ -43,7 +43,9 @@ namespace Arway
         public GameObject destinationDropdown;
         private TMP_Dropdown dropdown;
 
-        public MultiMapLocalizer multiMapLocalizer;
+        private MultiLocalizationWS multiLocalizationWS;
+        private MultiMapLocalizer multiMapLocalizer;
+        private bool isWebsocketScene;
 
         public static Dictionary<int,CloudMapOffset> mapIdToOffset = new Dictionary<int, CloudMapOffset>();
 
@@ -91,6 +93,21 @@ namespace Arway
                     Debug.Log("No AR Space found");
                 }
             }
+
+            // check if its websocket scene
+
+            if (m_Sdk.GetComponent<MultiLocalizationWS>() != null)
+            {
+                multiLocalizationWS = m_Sdk.GetComponent<MultiLocalizationWS>();
+                isWebsocketScene = true;
+            }
+
+            if (m_Sdk.GetComponent<MultiMapLocalizer>() != null)
+            {
+                multiMapLocalizer = m_Sdk.GetComponent<MultiMapLocalizer>();
+                isWebsocketScene = false;
+            }
+
         }
 
 
@@ -116,16 +133,13 @@ namespace Arway
                 {
                     try
                     {
-                        // enable multimapLocalizer
-                        multiMapLocalizer.enabled = true;
-
                         string jsonResult = System.Text.Encoding.UTF8.GetString(www.downloadHandler.data);
                         MapAssetData mapAssetData = JsonUtility.FromJson<MapAssetData>(jsonResult);
 
                         //---------------------   waypoints  -------------------------//
 
                         if (mapAssetData.Waypoints != null)
-                        {  
+                        {
                             for (int i = 0; i < mapAssetData.Waypoints.Length; i++)
                             {
                                 Vector3 pos = utils.getPose(mapAssetData.Waypoints[i].Position);
@@ -178,7 +192,10 @@ namespace Arway
 
                                 mapIdToOffset.Add(mapAssetData.CloudMaps[i].pcd_id, offset);
 
-                                multiMapLocalizer.cloudMaps.Add(mapAssetData.CloudMaps[i].pcd_id);
+                                if (isWebsocketScene)
+                                    multiLocalizationWS.cloudMaps.Add(mapAssetData.CloudMaps[i].pcd_id);
+                                else
+                                    multiMapLocalizer.cloudMaps.Add(mapAssetData.CloudMaps[i].pcd_id);
 
                             }
 
@@ -236,7 +253,6 @@ namespace Arway
                             }
                         }
 
-                       
 
                     }
                     catch (Exception e)
@@ -245,6 +261,13 @@ namespace Arway
                     }
                 }
             }
+
+            if (isWebsocketScene)
+            {
+                multiLocalizationWS.enabled = true;
+            }
+            else
+                multiMapLocalizer.enabled = true;
         }
 
         // update drop down for destinations... 

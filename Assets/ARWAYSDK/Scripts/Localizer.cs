@@ -199,11 +199,10 @@ namespace Arway
                     {
                         if (www.GetResponseHeaders().TryGetValue("SET-COOKIE", out string result))
                         {
-                            if (sessionCookieString.Length == 0)
-                            {
+                            
                                 sessionCookieString = result;
                                 PlayerPrefs.SetString("COOKIE", sessionCookieString);
-                            }
+                            
                         }
                     }
 

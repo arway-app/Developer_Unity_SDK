@@ -24,6 +24,13 @@ namespace Arway
         [Tooltip("List Item Holder.")]
         private GameObject listHolder;
 
+        [Header("Loader UI")]
+        [SerializeField]
+        private GameObject loaderPanel;
+
+        [SerializeField]
+        private Text loaderText;
+
         void Start()
         {
             m_Sdk = ArwaySDK.Instance;
@@ -36,12 +43,20 @@ namespace Arway
                 Debug.Log("***********\tDeveloper Token not valid!\t***********");
                 NotificationManager.Instance.GenerateError("Invalid Developer Token!!");
             }
+
+           
         }
 
 
         void CallGetMapList()
         {
             NotificationManager.Instance.GenerateNotification("Getting Map List..");
+
+            if (loaderPanel != null)
+            {
+                loaderText.text = "Loading Maps...";
+                loaderPanel.SetActive(true);
+            }
             StartCoroutine(GetMapList());
         }
 
@@ -57,9 +72,15 @@ namespace Arway
                 {
                     Debug.Log("****************\t" + www.error + "\t****************");
                     NotificationManager.Instance.GenerateWarning("Error: " + www.error);
+                    if (loaderPanel != null)
+                        loaderPanel.SetActive(false);
+
                 }
                 else
                 {
+                    if (loaderPanel != null)
+                        loaderPanel.SetActive(false);
+
                     try
                     {
                         string jsonResult = System.Text.Encoding.UTF8.GetString(www.downloadHandler.data);
@@ -89,6 +110,7 @@ namespace Arway
                             }
                         }
                     }
+
                     catch (Exception e)
                     {
                         Debug.LogException(e, this);
