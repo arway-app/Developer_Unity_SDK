@@ -243,6 +243,7 @@ namespace Arway
             imgpoi.transform.SetParent(m_ARSpace.transform);
             imgpoi.transform.localPosition = pos;
             imgpoi.transform.localEulerAngles = rot;
+            imgpoi.transform.localScale = scale;
             imgpoi.name = name;
 
 
@@ -266,6 +267,7 @@ namespace Arway
             temp.transform.SetParent(m_ARSpace.transform);
             temp.transform.localPosition = pos;
             temp.transform.localEulerAngles = rot;
+            temp.transform.localScale = scale;
             temp.name = name;
             temp.GetComponentInChildren<TMP_Text>().text = textcon;
 
