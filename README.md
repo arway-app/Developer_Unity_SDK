@@ -19,6 +19,9 @@ Example scene to show AR nanigation, paths and POI's can be edited in Real-time 
 ### MultiMap Localization 
 Example scene to show how to use multiple point cloud maps for localization in navigation experience, multiple point cloud maps can be Added and arranged from Web Studio (MAX 5 point cloud maps currently supported).
 
+### MultiMap Localization WS
+Example scene to show how to use Web Socket protocol for localization it uses Real-time Bi-directional connection between and clients and servers for a better localization experience for end-users, Rest is same as MultiMap Scene.
+
 ### Character Navigation 
 Example scene to show AR nanigation through a virtual character users can follow the character to reach destination. 
 
