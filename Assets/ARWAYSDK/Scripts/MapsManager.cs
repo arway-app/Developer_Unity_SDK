@@ -43,10 +43,7 @@ namespace Arway
                 Debug.Log("***********\tDeveloper Token not valid!\t***********");
                 NotificationManager.Instance.GenerateError("Invalid Developer Token!!");
             }
-
-           
         }
-
 
         void CallGetMapList()
         {
@@ -59,7 +56,6 @@ namespace Arway
             }
             StartCoroutine(GetMapList());
         }
-
 
         IEnumerator GetMapList()
         {
@@ -74,7 +70,6 @@ namespace Arway
                     NotificationManager.Instance.GenerateWarning("Error: " + www.error);
                     if (loaderPanel != null)
                         loaderPanel.SetActive(false);
-
                 }
                 else
                 {
@@ -110,7 +105,6 @@ namespace Arway
                             }
                         }
                     }
-
                     catch (Exception e)
                     {
                         Debug.LogException(e, this);
@@ -119,10 +113,8 @@ namespace Arway
             }
         }
 
-       
         IEnumerator StoreImageFromUrl(string mapImageUrl, Image img)
         {
-
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(mapImageUrl);
             yield return www.SendWebRequest();
 
@@ -138,7 +130,6 @@ namespace Arway
 
                 img.sprite = sprite;
             }
-
         }
     }
 }

@@ -1,8 +1,14 @@
 {
   "dependencies": {
+    "com.microsoft.azure.spatial-anchors-sdk.android": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.android-2.7.2.tgz",
+    "com.microsoft.azure.spatial-anchors-sdk.core": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.core-2.7.2.tgz",
+    "com.microsoft.azure.spatial-anchors-sdk.ios": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.ios-2.7.2.tgz",
+    "com.microsoft.azure.spatial-anchors-sdk.windows": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.windows-2.7.2.tgz",
     "com.unity.collab-proxy": "1.2.16",
+    "com.unity.device-simulator": "2.2.4-preview",
     "com.unity.ide.rider": "1.1.4",
     "com.unity.ide.vscode": "1.2.2",
+    "com.unity.mobile.android-logcat": "1.1.1",
     "com.unity.test-framework": "1.1.18",
     "com.unity.textmeshpro": "2.0.1",
     "com.unity.timeline": "1.2.10",

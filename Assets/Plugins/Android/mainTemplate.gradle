@@ -26,6 +26,8 @@ apply plugin: 'com.android.library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation('com.squareup.okhttp3:okhttp:[3.11.0]')
+    implementation('com.microsoft.appcenter:appcenter-analytics:[1.10.0]')
 **DEPS**}
 
 android {

@@ -25,6 +25,10 @@ namespace Arway
         public const string CLOSE_LOC = "close_loc";
 
         public const string AUTH = "developer/authentication/";
+
+        public const string DELETE_CLOUD_MAP = "map-api/map_delete/";
+
+        public const string MAP_UPLOAD = "map-api/map_upload/";
     }
 
 
@@ -192,6 +196,7 @@ namespace Arway
         public Position Position;
         public Rotation Rotation;
         public Scale Scale;
+        public string anchorid;
     }
 
     [Serializable]
