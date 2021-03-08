@@ -42,7 +42,9 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
 #if UNITY_WSA
             HoloLensUXTree.SetActive(true);
+            MobileAndEditorUXTree.SetActive(false);
 #else
+            HoloLensUXTree.SetActive(false);
             MobileAndEditorUXTree.SetActive(true);
 #endif
         }

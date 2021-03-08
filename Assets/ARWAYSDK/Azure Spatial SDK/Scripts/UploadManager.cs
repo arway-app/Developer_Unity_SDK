@@ -6,6 +6,7 @@ using System.IO.Compression;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 #if PLATFORM_ANDROID
@@ -43,7 +44,6 @@ namespace Arway
 
         private string m_longitude = "0.0", m_latitude = "0.0", m_altitude = "0.0";
 
-
         // Start is called before the first frame update
         void Start()
         {
@@ -57,9 +57,7 @@ namespace Arway
             //deleteMapURL = m_Sdk.ContentServer + EndPoint.DELETE_CLOUD_MAP;
             uploadURL = m_Sdk.ContentServer + EndPoint.MAP_UPLOAD;
             devToken = m_Sdk.developerToken;
-
         }
-
 
         public void uploadMapData()
         {
@@ -118,7 +116,6 @@ namespace Arway
 
         IEnumerator uploadMapData(string map_name, string anchor_id)
         {
-            
             if (!String.IsNullOrEmpty(anchor_id))
             {
                 newMapPanel.SetActive(false);
@@ -127,7 +124,6 @@ namespace Arway
 
                 if (File.Exists(pcdPath))
                 {
-
                     WWWForm form = new WWWForm();
                     form.AddField("map_name", map_name);
                     form.AddField("anchor_id", anchor_id);
@@ -181,14 +177,12 @@ namespace Arway
                             yield return new WaitForEndOfFrame();
                         }
 
-
                         if (value >= 100)
                         {
                             Debug.Log("upload status : " + req.downloadHandler.text);
                             NotificationManager.Instance.GenerateSuccess("Upload Done.");
                             mLoader.SetActive(false);
                             uiManager.HideProgressBar();
-
                         }
                         else
                         {
@@ -196,8 +190,11 @@ namespace Arway
                             NotificationManager.Instance.GenerateError("Upload Failed!!");
                             mLoader.SetActive(false);
                             uiManager.HideProgressBar();
-
                         }
+
+                        // Reload Mapping Scene
+                        Debug.Log("Re-Load Mapping Scene.");
+                        StartCoroutine(ReloadCurrentScene());
                     }
                 }
                 else
@@ -211,7 +208,6 @@ namespace Arway
                 Debug.Log("************\tNo Anchor ID !!!!!!!! \t***************");
                 NotificationManager.Instance.GenerateError("NO Anchor Id, Try mapping bigger area with more features");
             }
-
         }
 
         // check for internet connectivity
@@ -280,5 +276,23 @@ namespace Arway
             Input.location.Stop();
         }
 
+        IEnumerator ReloadCurrentScene()
+        {
+            yield return new WaitForSeconds(1f);
+
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+            asyncLoad.allowSceneActivation = false;
+
+            while (asyncLoad.progress < 0.9F)
+            {
+                yield return null;
+            }
+
+            Debug.Log(asyncLoad.progress);
+            yield return new WaitForSeconds(0.8f);
+
+
+            asyncLoad.allowSceneActivation = true;
+        }
     }
 }
