@@ -5,7 +5,7 @@ using UnityEngine;
 using Microsoft.Azure.SpatialAnchors;
 using Microsoft.Azure.SpatialAnchors.Unity;
 using Microsoft.Azure.SpatialAnchors.Unity.Examples;
-using Microsoft.Azure.SpatialAnchors.Unity.ARFoundation;
+// using Microsoft.Azure.SpatialAnchors.Unity.ARFoundation;
 using Arway;
 
 public class CreateAnchor : DemoScriptBase
@@ -136,12 +136,12 @@ public class CreateAnchor : DemoScriptBase
 
     public async override Task AdvanceDemoAsync()
     {
-      
+
         switch (currentAppState)
         {
             case AppState.DemoStepCreateSession:
                 currentAppState = AppState.DemoStepBusy;
-               
+
                 if (CloudManager.Session == null)
                 {
                     await CloudManager.CreateSessionAsync();
@@ -152,7 +152,7 @@ public class CreateAnchor : DemoScriptBase
 
                 await CloudManager.StartSessionAsync();
                 ARCameraPos = Camera.main.transform.position;
-                ARCameraRot = Quaternion.Euler(0f,Camera.main.transform.rotation.eulerAngles.y, Camera.main.transform.rotation.eulerAngles.z);
+                ARCameraRot = Quaternion.Euler(0f, Camera.main.transform.rotation.eulerAngles.y, Camera.main.transform.rotation.eulerAngles.z);
                 // Create Anchor At Camera Transform
 
                 SpawnOrMoveCurrentAnchoredObject(ARCameraPos, ARCameraRot);

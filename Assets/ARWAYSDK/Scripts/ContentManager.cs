@@ -1,5 +1,4 @@
-﻿
-/*===============================================================================
+﻿/*===============================================================================
 Copyright (C) 2020 ARWAY Ltd. All Rights Reserved.
 
 This file is part of ARwayKit AR SDK
@@ -8,6 +7,7 @@ The ARwayKit SDK cannot be copied, distributed, or made available to
 third-parties for commercial purposes without written permission of ARWAY Ltd.
 
 ===============================================================================*/
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -81,10 +81,11 @@ namespace Arway
         //AR Camera in the scene
         public Camera ARCamera;
 
-
         [Header("Show/Hide Content")]
         [SerializeField]
         private bool showContentBeforeLocalization;
+
+        private GameObject m_WaypointsAndDestinations, m_Texts, m_Images, m_3DModels;
 
         void Start()
         {
@@ -103,7 +104,6 @@ namespace Arway
             if (mapped_Cloud_Id.Length > 0)
                 cloudMaps.Add(int.Parse(mapped_Cloud_Id));
 
-
             m_Sdk = ArwaySDK.Instance;
 
             if (m_Sdk.developerToken != null && m_Sdk.developerToken.Length > 0)
@@ -115,7 +115,6 @@ namespace Arway
 
                 m_ARSpace.SetActive(showContentBeforeLocalization);
                 destinationDropdown.SetActive(showContentBeforeLocalization);
-
             }
             else
             {
@@ -123,16 +122,38 @@ namespace Arway
                 NotificationManager.Instance.GenerateWarning("Error: " + "Invalid Developer Token!!");
             }
 
-
             if (m_ARSpace == null)
             {
                 m_ARSpace = new GameObject("ARSpace");
+
                 if (m_ARSpace == null)
                 {
                     Debug.Log("No AR Space found");
                 }
             }
 
+            // Add ARAnchor to ARSpace
+            m_ARSpace.AddComponent<ARAnchor>();
+
+            // Create WaypointsAndDestinations Group with an ARAnchor
+            m_WaypointsAndDestinations = new GameObject("Waypoints & Destinations");
+            m_WaypointsAndDestinations.transform.parent = m_ARSpace.transform;
+            m_WaypointsAndDestinations.AddComponent<ARAnchor>();
+
+            // Create 3D Models Group with an ARAnchor
+            m_3DModels = new GameObject("3D Models");
+            m_3DModels.transform.parent = m_ARSpace.transform;
+            m_3DModels.AddComponent<ARAnchor>();
+
+            // Create Images Group with an ARAnchor
+            m_Images = new GameObject("Images");
+            m_Images.transform.parent = m_ARSpace.transform;
+            m_Images.AddComponent<ARAnchor>();
+
+            // Create Text Group with an ARAnchor
+            m_Texts = new GameObject("Texts");
+            m_Texts.transform.parent = m_ARSpace.transform;
+            m_Texts.AddComponent<ARAnchor>();
         }
 
         private bool CheckMapIdDetails()
@@ -151,7 +172,6 @@ namespace Arway
             Debug.Log("***********\tMap Id is null !!\t***********");
             return false;
         }
-
 
         /// <summary>
         /// Gets the map data.
@@ -208,7 +228,6 @@ namespace Arway
                                     StartCoroutine(CreatePrefab(destination, mapAssetData.Destinations[i].name, pos, rot));
 
                                     dropdown.options.Add(new TMP_Dropdown.OptionData(mapAssetData.Destinations[i].name));
-
                                 }
                             }
 
@@ -265,7 +284,6 @@ namespace Arway
                             }
                         }
 
-
                         RunButton.SetActive(true);
                     }
                     catch (Exception e)
@@ -286,7 +304,6 @@ namespace Arway
                 return;
             }
 
-            
             XRCameraIntrinsics intr;
             ARCameraManager cameraManager = m_Sdk.cameraManager;
             var cameraSubsystem = cameraManager.subsystem;
@@ -309,7 +326,6 @@ namespace Arway
 
                 Vector3 camPos = ARCamera.transform.position;
                 Quaternion camRot = ARCamera.transform.rotation;
-
 
                 var format = TextureFormat.RGB24;
 
@@ -349,9 +365,7 @@ namespace Arway
 
                 string output = JsonUtility.ToJson(lr);
                 StartCoroutine(sendCameraImages(output, camPos, camRot));
-
             }
-
         }
 
         /// <summary>
@@ -387,10 +401,8 @@ namespace Arway
                     {
                         if (www.GetResponseHeaders().TryGetValue("SET-COOKIE", out string result))
                         {
-                            
-                                sessionCookieString = result;
-                                PlayerPrefs.SetString("COOKIE", sessionCookieString);
-                            
+                            sessionCookieString = result;
+                            PlayerPrefs.SetString("COOKIE", sessionCookieString);
                         }
                     }
                     loaderPanel.SetActive(false);
@@ -419,15 +431,12 @@ namespace Arway
                     {
                         m_ARSpace.SetActive(true);
                         destinationDropdown.SetActive(true);
-
                     }
                 }
             }
         }
 
-
         // update drop down for destinations... 
-
         public void HangleDestinationSelection(int val)
         {
             if (val > 0)
@@ -436,13 +445,11 @@ namespace Arway
             }
         }
 
-
-
         IEnumerator CreatePrefab(GameObject gameObject, string name, Vector3 pos, Vector3 rot)
         {
             var temp = Instantiate(gameObject);
             temp.name = name;
-            temp.transform.parent = m_ARSpace.transform;
+            temp.transform.parent = m_WaypointsAndDestinations.transform;
             temp.transform.localPosition = pos;
             temp.transform.localEulerAngles = rot;
 
@@ -464,12 +471,11 @@ namespace Arway
             // Debug.Log("URL>>>" + url);
 
             var imgpoi = Instantiate(imagesPOI);
-            imgpoi.transform.SetParent(m_ARSpace.transform);
+            imgpoi.transform.SetParent(m_Images.transform);
             imgpoi.transform.localPosition = pos;
             imgpoi.transform.localEulerAngles = rot;
             imgpoi.transform.localScale = scale;
             imgpoi.name = name;
-
 
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
             yield return www.SendWebRequest();
@@ -488,15 +494,13 @@ namespace Arway
         public void loadPoiText(String textcon, Vector3 pos, Vector3 rot, Vector3 scale, String name)
         {
             var temp = Instantiate(textPOI);
-            temp.transform.SetParent(m_ARSpace.transform);
+            temp.transform.SetParent(m_Texts.transform);
             temp.transform.localPosition = pos;
             temp.transform.localEulerAngles = rot;
             temp.transform.localScale = scale;
             temp.name = name;
             temp.GetComponentInChildren<TMP_Text>().text = textcon;
-
         }
-
 
         // --------------- >>> START <<< GLB Model Loading ---------------//
         private void CreateGlbPrefab(string glb_name, Vector3 pos, Vector3 rot, Vector3 scale, string url)
@@ -538,11 +542,10 @@ namespace Arway
             GameObject model = Importer.LoadFromFile(path);
 
             model.name = glb_name;
-            model.transform.parent = m_ARSpace.transform;
+            model.transform.parent = m_3DModels.transform;
             model.transform.localPosition = pos;
             model.transform.localEulerAngles = rot;
             model.transform.localScale = scale;
-
         }
 
         IEnumerator GetFileRequest(string url, Action<UnityWebRequest> callback)
@@ -554,7 +557,6 @@ namespace Arway
                 callback(req);
             }
         }
-
         // --------------- >>> END <<<  GLB Model Loading ---------------//
 
         /// <summary>
@@ -565,6 +567,5 @@ namespace Arway
         {
             SceneManager.LoadScene(sceneName);
         }
-
     }
 }

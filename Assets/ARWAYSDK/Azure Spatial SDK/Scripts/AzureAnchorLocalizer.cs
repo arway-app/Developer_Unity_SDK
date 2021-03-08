@@ -25,12 +25,18 @@ using System.Threading.Tasks;
 
 namespace Arway
 {
-
     public class AzureAnchorLocalizer : DemoScriptBase
     {
         public ArwaySDK m_Sdk = null;
 
         public Text debugpose;
+
+        [SerializeField]
+        private GameObject loaderPanel;
+        [SerializeField]
+        private Text loaderText;
+        [SerializeField]
+        private GameObject localizeButton;
 
         public List<string> cloudMaps = new List<string>();
 
@@ -41,8 +47,6 @@ namespace Arway
         [Header("Show/Hide Content")]
         [SerializeField]
         private bool showContentBeforeLocalization;
-
-
 
         internal enum AppState
         {
@@ -112,7 +116,6 @@ namespace Arway
                 return;
             }
             feedbackBox.text = stateParams[currentAppState].StepMessage;
-
         }
 
         protected override void OnCloudAnchorLocated(AnchorLocatedEventArgs args)
@@ -127,7 +130,6 @@ namespace Arway
                 {
                     Pose anchorPose = Pose.identity;
 
-
 #if UNITY_ANDROID || UNITY_IOS
                     anchorPose = currentCloudAnchor.GetPose();
 #endif
@@ -140,8 +142,10 @@ namespace Arway
 
                         Matrix4x4 anchorPoseOg = Matrix4x4.TRS(anchorPose.position, anchorPose.rotation, Vector3.one);
 
-                        Matrix4x4 resultpose =  anchorPoseOg * cloudMapOffset.inverse;
-                        
+                        Matrix4x4 resultpose = anchorPoseOg * cloudMapOffset.inverse;
+
+                        loaderPanel.SetActive(false);
+                        localizeButton.SetActive(false);
                         ARSpace.SetActive(true);
                         destinationDropdown.SetActive(true);
 
@@ -152,14 +156,11 @@ namespace Arway
                     }
                     else
                     {
-
                         ARSpace.SetActive(true);
                         destinationDropdown.SetActive(true);
                         NotificationManager.Instance.GenerateSuccess("No Offset , setting default pose" + args.Identifier);
                         SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
-
                     }
-
                 });
 
                 Debug.Log("Yay, anchor located!");
@@ -174,7 +175,6 @@ namespace Arway
                 foreach (string item in cloudMaps)
                 {
                     anchorsToFind.Add(item);
-
                 }
             }
 
@@ -198,6 +198,9 @@ namespace Arway
                     // currentAppState = AppState.DemoStepStartSessionForQuery;
                     currentAppState = AppState.DemoStepBusy;
                     await CloudManager.StartSessionAsync();
+
+                    loaderText.text = "Localizing...";
+                    loaderPanel.SetActive(true);
 
                     currentAppState = AppState.DemoStepLookingForAnchor;
                     if (currentWatcher != null)

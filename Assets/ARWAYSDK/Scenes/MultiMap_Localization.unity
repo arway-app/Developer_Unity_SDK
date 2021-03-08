@@ -1590,6 +1590,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Sdk: {fileID: 8345762997811874154}
   listHolder: {fileID: 612741127}
+  loaderPanel: {fileID: 1805692487}
+  loaderText: {fileID: 1202620852}
 --- !u!4 &866548462
 Transform:
   m_ObjectHideFlags: 0

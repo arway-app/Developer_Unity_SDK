@@ -214,14 +214,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             anchorIdsToLocate.AddRange(anchorIds);
 
             string[] anchoriden = anchorIdsToLocate.ToArray();
-            Debug.Log(anchoriden[0].ToString());
-            // Log each element one at a time
-            foreach (var item in anchorIdsToLocate)
-            {
-
-            }
-
-            Debug.Log(anchorIdsToLocate.ToArray().GetValue(0));
+  
 
             anchorLocateCriteria.Identifiers = anchoriden;
         }
