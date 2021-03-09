@@ -91,27 +91,27 @@ namespace Arway
             }
 
             // Add ARAnchor to ARSpace
-            m_ARSpace.AddComponent<ARAnchor>();
+            // m_ARSpace.AddComponent<ARAnchor>();
 
             // Create WaypointsAndDestinations Group with an ARAnchor
             m_WaypointsAndDestinations = new GameObject("Waypoints & Destinations");
             m_WaypointsAndDestinations.transform.parent = m_ARSpace.transform;
-            m_WaypointsAndDestinations.AddComponent<ARAnchor>();
+            // m_WaypointsAndDestinations.AddComponent<ARAnchor>();
 
             // Create 3D Models Group with an ARAnchor
             m_3DModels = new GameObject("3D Models");
             m_3DModels.transform.parent = m_ARSpace.transform;
-            m_3DModels.AddComponent<ARAnchor>();
+            // m_3DModels.AddComponent<ARAnchor>();
 
             // Create Images Group with an ARAnchor
             m_Images = new GameObject("Images");
             m_Images.transform.parent = m_ARSpace.transform;
-            m_Images.AddComponent<ARAnchor>();
+            // m_Images.AddComponent<ARAnchor>();
 
             // Create Text Group with an ARAnchor
             m_Texts = new GameObject("Texts");
             m_Texts.transform.parent = m_ARSpace.transform;
-            m_Texts.AddComponent<ARAnchor>();
+            // m_Texts.AddComponent<ARAnchor>();
 
             // Get reference to AzureAnchorLocalizer script
             if (m_Sdk.GetComponent<AzureAnchorLocalizer>() != null)
