@@ -54,7 +54,7 @@ namespace Arway
 
         private void Start()
         {
-            if(m_Sdk == null)
+            if (m_Sdk == null)
             {
                 m_Sdk = ArwaySDK.Instance;
             }
@@ -75,7 +75,6 @@ namespace Arway
             timerManager = timerManager.GetComponent<TimerManager>();
         }
 
-
         private void OnPointCloudsChanged(ARPointCloudChangedEventArgs eventArgs)
         {
             if (isRecording)
@@ -91,9 +90,6 @@ namespace Arway
             }
         }
 
-
-
-
         float threshold = 0.0f;
 
         private void CalculateConfidance(ARPointCloud pointCloud)
@@ -106,8 +102,8 @@ namespace Arway
 #elif UNITY_IOS 
             threshold = 0.26f; // since we do not get confidencValue in iOS
 #endif
-
         }
+
         int currIndex = 0;
 
         private void AddPointCloudToList(ARPointCloud pointCloud)
@@ -143,9 +139,9 @@ namespace Arway
         {
             // reset the AR Foundation Origin first... 
             m_Sdk.arSession.Reset();
+
             // check if tracking is good to start mapping..
             StartCoroutine(CheckTrackingState());
-
         }
 
         IEnumerator CheckTrackingState()
@@ -163,11 +159,14 @@ namespace Arway
                 StartCoroutine(CheckTrackingState());
                 Debug.Log("Tracking state is poor");
             }
-
         }
 
         private void ReadyForMapping()
         {
+            // Get the current location of the device
+            Debug.Log("Fetching Location...");
+            uploadManager.GetMapCoordinates();
+
             Init();
             Debug.Log("moves next statement");
             pointCloudManager.enabled = true;
@@ -211,20 +210,19 @@ namespace Arway
 
         public void StopMapping()
         {
-                createAnchor.AdvanceDemoAsync();
-                pointCloudManager.enabled = false;
-                pointCloudManager.SetTrackablesActive(false);
+            createAnchor.AdvanceDemoAsync();
+            pointCloudManager.enabled = false;
+            pointCloudManager.SetTrackablesActive(false);
 
-                isRecording = false;
-                Debug.Log(">>>>>>>>>>>>  Writing PCD File.  <<<<<<<<<<<<");
+            isRecording = false;
+            Debug.Log(">>>>>>>>>>>>  Writing PCD File.  <<<<<<<<<<<<");
 
-                timerManager.StopTimer();
+            timerManager.StopTimer();
 
-                StopButton.SetActive(false);
-                StartButton.SetActive(true);
+            StopButton.SetActive(false);
+            StartButton.SetActive(true);
 
-                CreatePCDAsync();
-            
+            CreatePCDAsync();
         }
 
         private async Task CreatePCDAsync()

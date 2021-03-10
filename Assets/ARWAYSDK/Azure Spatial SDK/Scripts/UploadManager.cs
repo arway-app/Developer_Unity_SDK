@@ -47,8 +47,7 @@ namespace Arway
         // Start is called before the first frame update
         void Start()
         {
-            // Get the current location of the device
-            StartCoroutine(GetMapLocation());
+            GetMapCoordinates();
 
             pcdPath = Path.Combine(Application.persistentDataPath + "/map/", pcdName);
 
@@ -57,6 +56,12 @@ namespace Arway
             //deleteMapURL = m_Sdk.ContentServer + EndPoint.DELETE_CLOUD_MAP;
             uploadURL = m_Sdk.ContentServer + EndPoint.MAP_UPLOAD;
             devToken = m_Sdk.developerToken;
+        }
+
+        public void GetMapCoordinates()
+        {
+            // Get the current location of the device
+            StartCoroutine(GetMapLocation());
         }
 
         public void uploadMapData()
@@ -233,11 +238,11 @@ namespace Arway
             if (Input.location.isEnabledByUser)
             {
                 // Start service before querying location
-                Input.location.Start();
+                Input.location.Start(0.001f, 0.001f);
             }
             else
             {
-                // TODO: Create Notification saying location isn't enabled
+                NotificationManager.Instance.GenerateWarning("Location not found. Enable GPS.");
             }
 
             // Wait until service initializes
@@ -252,14 +257,14 @@ namespace Arway
             if (maxWait < 1)
             {
                 Debug.Log("Timed out");
-                yield break;
+                // yield break;
             }
 
             // Connection has failed
             if (Input.location.status == LocationServiceStatus.Failed)
             {
                 Debug.Log("Unable to determine device location");
-                yield break;
+                // yield break;
             }
             else
             {
@@ -272,8 +277,11 @@ namespace Arway
                 m_altitude = "" + Input.location.lastData.altitude;
             }
 
-            // Stop service if there is no need to query location updates continuously
-            Input.location.Stop();
+            if (m_longitude != "0" && m_latitude != "0")
+            {
+                // Stop service if there is no need to query location updates continuously
+                Input.location.Stop();
+            }
         }
 
         IEnumerator ReloadCurrentScene()
@@ -290,7 +298,6 @@ namespace Arway
 
             Debug.Log(asyncLoad.progress);
             yield return new WaitForSeconds(0.8f);
-
 
             asyncLoad.allowSceneActivation = true;
         }
