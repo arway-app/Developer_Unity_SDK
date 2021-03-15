@@ -755,10 +755,10 @@ PlayerSettings:
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled:
     Build: 0
-    Collab: 1
+    Collab: 0
     ErrorHub: 0
     Hub: 0
-    UNet: 1
+    UNet: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -771,7 +771,7 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 5c459370-af8b-43ea-b32e-aba5b478d606
+  cloudProjectId: 
   framebufferDepthMemorylessMode: 0
   projectName: SDK_AR_Client
   organizationId: arway-ltd
