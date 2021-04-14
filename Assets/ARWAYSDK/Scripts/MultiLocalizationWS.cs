@@ -28,7 +28,6 @@ namespace Arway
         private string hostIP;
 
         // Server port
-        
         private int port = 5000;
 
         // Flag to use localhost
@@ -65,13 +64,12 @@ namespace Arway
         [Header("UI")]
         [SerializeField]
         private GameObject loaderPanel;
-       
+
         [SerializeField]
         private Text loaderText;
 
         [SerializeField]
         private GameObject connectionLoaderPanel;
-
 
         [Header("Animaiton")]
         [SerializeField]
@@ -97,7 +95,6 @@ namespace Arway
 
         private bool isFirstRequest = true;
 
-
         Queue<ArCameraOffset> ArCameraPoseQueue = new Queue<ArCameraOffset>();
 
         /// <summary>
@@ -106,7 +103,6 @@ namespace Arway
         private void Awake()
         {
             server = "ws://" + hostIP + "/req_pose";
-
         }
 
         public void Start()
@@ -125,11 +121,7 @@ namespace Arway
             ArSpace.SetActive(showContentBeforeLocalization);
             destinationDropdown.SetActive(showContentBeforeLocalization);
             ConnectWS();
-
-           
-           
         }
-
 
         /// <summary>
         /// Checks the tracking.
@@ -162,10 +154,8 @@ namespace Arway
             return quality;
         }
 
-        // Start is called before the first frame update
         public async void ConnectWS()
         {
-
             websocket.OnOpen += () =>
             {
                 Debug.Log("Connection open!");
@@ -195,7 +185,6 @@ namespace Arway
 
                 if (isFirstRequest)
                     connectionLoaderPanel.SetActive(false);
-
             };
 
             websocket.OnMessage += (bytes) =>
@@ -209,7 +198,7 @@ namespace Arway
                 {
                     connectionLoaderPanel.SetActive(false);
                     isFirstRequest = false;
-
+                    InvokeRepeating("RequestLocalization", 1f, localizationFrequency);
                     StartCoroutine(showInstructions());
                 }
 
@@ -220,9 +209,6 @@ namespace Arway
 
                     camPos = arCameraOffset.position;
                     camRot = arCameraOffset.rotation;
-
-
-                    InvokeRepeating("RequestLocalization", 1f, localizationFrequency);
 
                     //hide loader panel..
                     loaderPanel.SetActive(false);
@@ -244,6 +230,7 @@ namespace Arway
                             Handheld.Vibrate();
                         CancelInvoke("RequestLocalization");
 
+                        m_Sdk.GetComponent<MultiMapAssetImporter>().AddARAnchors();
                     }
 
                     loc_attempts_txt.text = "Localization attempts:  " + counts + " / " + requestCount;
@@ -261,13 +248,12 @@ namespace Arway
             await websocket.Connect();
         }
 
-
         public unsafe void RequestLocalization()
         {
             if (sentrequestCount < maximumRequestinSession)
             {
-
                 Debug.Log(" >>>>>>   RequestLocalization  <<<<<<< " + cloudMaps.Count);
+                m_Sdk.GetComponent<MultiMapAssetImporter>().RemoveARAnchors();
 
                 loaderText.text = "Localizing...";
 
@@ -277,7 +263,6 @@ namespace Arway
 
                 if (cameraSubsystem != null && cameraSubsystem.TryGetIntrinsics(out intr) && cameraManager.TryAcquireLatestCpuImage(out XRCpuImage image))
                 {
-
                     //Debug.Log("Cloud ID >>>>>>>>>>>>>>> : " + cloud_id);
 
                     var format = TextureFormat.RGB24;
@@ -314,7 +299,6 @@ namespace Arway
 
                     byte[] _bytesjpg = m_Texture.EncodeToJPG();
 
-
                     loc_map_txt.text = "";
 
                     Debug.Log("TotalMaps: " + cloudMaps.Count);
@@ -333,7 +317,6 @@ namespace Arway
                     lr.image = Convert.ToBase64String(_bytesjpg);
                     lr.timestamp = image.timestamp;
 
-
                     ArCameraOffset arCameraOffset = new ArCameraOffset
                     {
                         position = ARCamera.transform.position,
@@ -351,7 +334,6 @@ namespace Arway
             else
             {
                 CancelInvoke("RequestLocalization");
-
             }
         }
 
@@ -359,31 +341,25 @@ namespace Arway
         {
             //Debug.Log(">>>>>>>  SendMessage  <<<<<<<" + rawdata);
             SendWebSocketMessage(rawdata);
-
         }
-
 
         void Update()
         {
-           
+
 #if !UNITY_WEBGL || UNITY_EDITOR
             if (websocket != null)
                 websocket.DispatchMessageQueue();
 #endif
         }
 
-        
-
         async void SendWebSocketMessage(string rawData)
         {
             if (websocket.State == WSState.Open)
             {
-                //show loader panel..
+                // show loader panel
                 loaderPanel.SetActive(true);
 
-                
                 await websocket.SendText(rawData);
-                
             }
         }
 
@@ -393,13 +369,11 @@ namespace Arway
                 await websocket.Close();
         }
 
-
         private async void OnApplicationQuit()
         {
             if (websocket != null)
                 await websocket.Close();
         }
-
 
         async void OnDisable()
         {
@@ -413,8 +387,6 @@ namespace Arway
             //Wait for 6 seconds
             yield return new WaitForSeconds(6);
             findPlaneGO.SetActive(false);
-
         }
-
     }
 }

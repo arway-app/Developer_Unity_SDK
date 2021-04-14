@@ -20,7 +20,6 @@ using System.Collections.Generic;
 
 namespace Arway
 {
-
     public class MultiMapLocalizer : MonoBehaviour
     {
         public ArwaySDK m_Sdk = null;
@@ -63,7 +62,6 @@ namespace Arway
         //AR Camera in the scene
         public Camera ARCamera;
 
-
         /// <summary>
         /// Start this instance.
         /// </summary>
@@ -82,22 +80,20 @@ namespace Arway
             destinationDropdown.SetActive(showContentBeforeLocalization);
         }
 
-
         /// <summary>
         /// Requests the localization.
         /// </summary>
         public unsafe void RequestLocalization()
         {
             Debug.Log(" >>>>>>   RequestLocalization  <<<<<<<" + cloudMaps.Count);
+            m_Sdk.GetComponent<MultiMapAssetImporter>().RemoveARAnchors();
 
-            
             XRCameraIntrinsics intr;
             ARCameraManager cameraManager = m_Sdk.cameraManager;
             var cameraSubsystem = cameraManager.subsystem;
 
             if (cameraSubsystem != null && cameraSubsystem.TryGetIntrinsics(out intr) && cameraManager.TryAcquireLatestCpuImage(out XRCpuImage image))
             {
-
                 //Debug.Log("Cloud ID >>>>>>>>>>>>>>> : " + cloud_id);
 
                 var format = TextureFormat.RGB24;
@@ -134,7 +130,6 @@ namespace Arway
 
                 byte[] _bytesjpg = m_Texture.EncodeToJPG();
 
-
                 loc_map_txt.text = "";
 
                 Debug.Log("TotalMaps: " + cloudMaps.Count);
@@ -152,17 +147,14 @@ namespace Arway
                 lr.image = Convert.ToBase64String(_bytesjpg);
                 lr.timestamp = image.timestamp;
 
-
                 Vector3 camPos = ARCamera.transform.position;
                 Quaternion camRot = ARCamera.transform.rotation;
 
                 string loc_request_data = JsonUtility.ToJson(lr);
 
                 StartCoroutine(sendCameraImages(loc_request_data, camPos, camRot));
-
             }
         }
-
 
         /// <summary>
         /// Sends the camera images.
@@ -172,7 +164,6 @@ namespace Arway
         /// <param name="cloud_id">Cloud identifier.</param>
         IEnumerator sendCameraImages(string rawdata, Vector3 camPos, Quaternion camRot)
         {
-
             loaderText.text = "Localizing...";
             loaderPanel.SetActive(true);
 
@@ -193,9 +184,7 @@ namespace Arway
 
                 if (www.error != null)
                 {
-
                     loaderPanel.SetActive(false);
-
                 }
                 else
                 {
@@ -203,9 +192,9 @@ namespace Arway
                     if (www.GetResponseHeaders().ContainsKey("SET-COOKIE"))
                     {
                         if (www.GetResponseHeaders().TryGetValue("SET-COOKIE", out string result))
-                        {  
-                                sessionCookieString = result;
-                                PlayerPrefs.SetString("COOKIE", sessionCookieString);
+                        {
+                            sessionCookieString = result;
+                            PlayerPrefs.SetString("COOKIE", sessionCookieString);
                         }
                     }
 
@@ -227,6 +216,7 @@ namespace Arway
                         if (vibrateOnLocalize)
                             Handheld.Vibrate();
 
+                        m_Sdk.GetComponent<MultiMapAssetImporter>().AddARAnchors();
                     }
 
                     loc_attempts_txt.text = "Localization attempts:  " + counts + " / " + requestCount;
@@ -240,6 +230,5 @@ namespace Arway
                 }
             }
         }
-
     }
 }

@@ -93,28 +93,21 @@ namespace Arway
                 }
             }
 
-            // Add ARAnchor to ARSpace
-            // m_ARSpace.AddComponent<ARAnchor>();
-
             // Create WaypointsAndDestinations Group with an ARAnchor
             m_WaypointsAndDestinations = new GameObject("Waypoints & Destinations");
             m_WaypointsAndDestinations.transform.parent = m_ARSpace.transform;
-            // m_WaypointsAndDestinations.AddComponent<ARAnchor>();
 
             // Create 3D Models Group with an ARAnchor
             m_3DModels = new GameObject("3D Models");
             m_3DModels.transform.parent = m_ARSpace.transform;
-            // m_3DModels.AddComponent<ARAnchor>();
 
             // Create Images Group with an ARAnchor
             m_Images = new GameObject("Images");
             m_Images.transform.parent = m_ARSpace.transform;
-            // m_Images.AddComponent<ARAnchor>();
 
             // Create Text Group with an ARAnchor
             m_Texts = new GameObject("Texts");
             m_Texts.transform.parent = m_ARSpace.transform;
-            // m_Texts.AddComponent<ARAnchor>();
 
             // check if its websocket scene
             if (m_Sdk.GetComponent<MultiLocalizationWS>() != null)
@@ -128,6 +121,28 @@ namespace Arway
                 multiMapLocalizer = m_Sdk.GetComponent<MultiMapLocalizer>();
                 isWebsocketScene = false;
             }
+        }
+
+        public void AddARAnchors()
+        {
+            RemoveARAnchors();
+
+            Debug.Log("Adding AR Anchors");
+
+            m_WaypointsAndDestinations.AddComponent<ARAnchor>();
+            m_3DModels.AddComponent<ARAnchor>();
+            m_Images.AddComponent<ARAnchor>();
+            m_Texts.AddComponent<ARAnchor>();
+        }
+
+        public void RemoveARAnchors()
+        {
+            Debug.Log("Removing AR Anchors");
+
+            Destroy(m_WaypointsAndDestinations.GetComponent<ARAnchor>());
+            Destroy(m_3DModels.GetComponent<ARAnchor>());
+            Destroy(m_Images.GetComponent<ARAnchor>());
+            Destroy(m_Texts.GetComponent<ARAnchor>());
         }
 
         /// <summary>

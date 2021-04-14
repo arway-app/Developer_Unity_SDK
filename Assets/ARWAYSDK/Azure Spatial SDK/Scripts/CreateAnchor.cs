@@ -5,7 +5,6 @@ using UnityEngine;
 using Microsoft.Azure.SpatialAnchors;
 using Microsoft.Azure.SpatialAnchors.Unity;
 using Microsoft.Azure.SpatialAnchors.Unity.Examples;
-// using Microsoft.Azure.SpatialAnchors.Unity.ARFoundation;
 using Arway;
 
 public class CreateAnchor : DemoScriptBase
@@ -111,6 +110,8 @@ public class CreateAnchor : DemoScriptBase
         Debug.Log("Anchor created, yay!");
 
         currentAnchorId = currentCloudAnchor.Identifier;
+
+        PlayerPrefs.SetString("CURR_ANCHOR_ID", currentAnchorId);
 
         Debug.Log("ANCHOR ID :- " + currentAnchorId);
         NotificationManager.Instance.GenerateSuccess("ANCHOR ID :- " + currentAnchorId);

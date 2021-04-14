@@ -7,6 +7,7 @@ The ARwayKit SDK cannot be copied, distributed, or made available to
 third-parties for commercial purposes without written permission of ARWAY Ltd.
 
 ===============================================================================*/
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,10 +16,8 @@ using UnityEngine;
 
 namespace Arway
 {
-
     public class NavController : MonoBehaviour
     {
-
         [Header("Visualization")]
         [SerializeField]
         private GameObject m_navigationPathPrefab = null;
@@ -29,7 +28,6 @@ namespace Arway
         public Node[] allnodes;
         private Node target;
         public List<Node> path = new List<Node>();
-        public Vector3[] positionpoint;
         List<Vector3> corners = new List<Vector3>();
         [Obsolete]
 
@@ -37,9 +35,12 @@ namespace Arway
 
         public bool showPath = true;
 
-        public TMP_Text m_DistanceLeft, m_TimeLeft;
+        public TMP_Text m_DistanceLeft, m_TimeLeft, m_Direction;
+        public GameObject m_LeftDirectionArrow, m_RightDirectionArrow;
 
         private GameObject m_MainCamera;
+        private GameObject navigationPrefab, leftArrow, rightArrow;
+
         private bool destinationUpdated = false, isNavigating = false;
         private float distanceLeft = 0f;
         private float walkingSpeed = 1.0f;
@@ -48,8 +49,18 @@ namespace Arway
         void Start()
         {
             m_MainCamera = Camera.main.gameObject;
+
             m_DistanceLeft.gameObject.SetActive(false);
             m_TimeLeft.gameObject.SetActive(false);
+
+            navigationPrefab = m_DistanceLeft.transform.parent.gameObject;
+            navigationPrefab.SetActive(false);
+
+            leftArrow = m_Direction.transform.GetChild(0).gameObject;
+            rightArrow = m_Direction.transform.GetChild(1).gameObject;
+
+            m_LeftDirectionArrow.SetActive(false);
+            m_RightDirectionArrow.SetActive(false);
 
             dropdown = dropdown.GetComponent<TMP_Dropdown>();
 
@@ -145,6 +156,8 @@ namespace Arway
                 m_DistanceLeft.gameObject.SetActive(true);
                 m_TimeLeft.gameObject.SetActive(true);
 
+                navigationPrefab.SetActive(true);
+
                 distanceLeft += Vector3.Distance(path[0].gameObject.transform.position, m_MainCamera.transform.position);
 
                 if (path.Count >= 2)
@@ -155,26 +168,42 @@ namespace Arway
                     }
                 }
 
+                if (path.Count >= 4)
+                {
+                    StartCoroutine(CheckForTurns(path[0].gameObject, path[1].gameObject, path[2].gameObject));
+                }
+                else
+                {
+                    m_Direction.text = "";
+
+                    leftArrow.SetActive(false);
+                    rightArrow.SetActive(false);
+
+                    m_LeftDirectionArrow.SetActive(false);
+                    m_RightDirectionArrow.SetActive(false);
+                }
+
                 if (distanceLeft < 0.25f)
                 {
-                    m_DistanceLeft.text = "<u>Distance:</u> 0 m";
-                    m_TimeLeft.text = "<u>ETA:</u> 0 sec";
+                    m_DistanceLeft.text = "<size=64>0</size> m";
+                    m_TimeLeft.text = "<size=64>0</size> sec";
+                    m_Direction.text = "";
 
                     isNavigating = false;
                 }
                 else
                 {
-                    m_DistanceLeft.text = "<u>Distance:</u> " + distanceLeft.ToString("F1") + " m";
+                    m_DistanceLeft.text = "<size=64>" + distanceLeft.ToString("F1") + "</size> m";
 
                     var timeLeft = Mathf.RoundToInt(distanceLeft / walkingSpeed);
 
                     if (timeLeft >= 60)
                     {
-                        m_TimeLeft.text = "<u>ETA:</u> " + timeLeft / 60 + " min " + timeLeft % 60 + " sec";
+                        m_TimeLeft.text = "<size=64>" + timeLeft / 60 + "</size>  min <size=64>" + timeLeft % 60 + "</size> sec";
                     }
                     else
                     {
-                        m_TimeLeft.text = "<u>ETA:</u> " + timeLeft % 60 + " sec";
+                        m_TimeLeft.text = "<size=64>" + timeLeft % 60 + "</size> sec";
                     }
                 }
             }
@@ -188,6 +217,7 @@ namespace Arway
             }
         }
 
+        // Calculate the user's walking speed per 1 sec
         IEnumerator CalculateWalkingSpeed()
         {
             if (isNavigating && path.Count >= 1)
@@ -204,10 +234,124 @@ namespace Arway
                 {
                     walkingSpeed = currSpeed;
                 }
+
+                yield return new WaitForSeconds(1f);
+                StartCoroutine(CalculateWalkingSpeed());
             }
 
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(CalculateWalkingSpeed());
+            yield return null;
+        }
+
+        // Check for Turns and Main Camera Deviations from Path
+        IEnumerator CheckForTurns(GameObject a, GameObject b, GameObject c)
+        {
+            Vector3 A = a.transform.position;
+            Vector3 B = b.transform.position;
+            Vector3 C = c.transform.position;
+
+            // Check Angle of turn
+            Vector3 v1 = new Vector3(C.x - A.x, C.y - A.y, C.z - A.z);
+            Vector3 v2 = new Vector3(B.x - A.x, B.y - A.y, B.z - A.z);
+
+            float v1mag = (float)Math.Sqrt(v1.x * v1.x + v1.y * v1.y + v1.z * v1.z);
+            Vector3 v1norm = new Vector3(v1.x / v1mag, v1.y / v1mag, v1.z / v1mag);
+
+            float v2mag = (float)Math.Sqrt(v2.x * v2.x + v2.y * v2.y + v2.z * v2.z);
+            Vector3 v2norm = new Vector3(v2.x / v2mag, v2.y / v2mag, v2.z / v2mag);
+
+            var res = v1norm.x * v2norm.x + v1norm.y * v2norm.y + v1norm.z * v2norm.z;
+
+            var angle = Math.Acos(res);
+            angle = (float)(angle * 180 / Math.PI);
+
+            if (angle >= 180)
+                angle -= 180;
+
+            // Check Angle of Main Camera in relative to the path
+            var targetWaypoint = new Vector3(A.x, m_MainCamera.transform.position.y, A.z);
+            Vector3 targetDir = targetWaypoint - m_MainCamera.transform.position;
+            float angleMainCamera = Vector3.Angle(targetDir, m_MainCamera.transform.forward);
+
+            // Check Left or Right Direction of Main Camera
+            Vector3 camHeading = m_MainCamera.transform.position - A;
+            var camDir = AngleDir(m_MainCamera.transform.forward, camHeading, m_MainCamera.transform.up);
+
+            // If user is not facing the given path
+            if (angleMainCamera >= 30)
+            {
+                m_Direction.text = "";
+
+                leftArrow.SetActive(false);
+                rightArrow.SetActive(false);
+
+                if (camDir <= -0.001f)
+                {
+                    m_LeftDirectionArrow.SetActive(false);
+                    m_RightDirectionArrow.SetActive(true);
+                }
+                else if (camDir >= 0.001f)
+                {
+                    m_LeftDirectionArrow.SetActive(true);
+                    m_RightDirectionArrow.SetActive(false);
+                }
+                else
+                {
+                    m_LeftDirectionArrow.SetActive(false);
+                    m_RightDirectionArrow.SetActive(false);
+                }
+            }
+            else
+            {
+                m_LeftDirectionArrow.SetActive(false);
+                m_RightDirectionArrow.SetActive(false);
+
+                // Check Left or Right Direction of the Turn
+                Vector3 heading = C - A;
+
+                var dir = AngleDir(m_MainCamera.transform.forward, heading, m_MainCamera.transform.up);
+
+                if (angle >= 10)
+                {
+                    if (dir <= -0.001f)
+                    {
+                        m_Direction.text = "Turn Left";
+
+                        leftArrow.SetActive(true);
+                        rightArrow.SetActive(false);
+                    }
+                    else if (dir >= 0.001f)
+                    {
+                        m_Direction.text = "Turn Right";
+
+                        leftArrow.SetActive(false);
+                        rightArrow.SetActive(true);
+                    }
+                    else
+                    {
+                        m_Direction.text = "";
+
+                        leftArrow.SetActive(false);
+                        rightArrow.SetActive(false);
+                    }
+                }
+                else
+                {
+                    m_Direction.text = "";
+
+                    leftArrow.SetActive(false);
+                    rightArrow.SetActive(false);
+                }
+            }
+            yield return null;
+        }
+
+        // Get the relative direction (Left / Right) between two vectors
+        private float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
+        {
+            Vector3 perp = Vector3.Cross(fwd, targetDir);
+            float dir = Vector3.Dot(perp, up);
+
+            return dir;
         }
     }
 }

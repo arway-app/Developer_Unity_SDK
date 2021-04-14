@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #if PLATFORM_ANDROID
 using UnityEngine.Android;
@@ -103,7 +103,9 @@ namespace Arway
                 else
                 {
                     Debug.Log("Anchor Id exist.");
-                    StartCoroutine(uploadMapData(map_name, anchor_id));
+                    //StartCoroutine(uploadMapData(map_name, anchor_id));
+
+                    ReadyToUploadMap(map_name, anchor_id);
 
                     attempts = 0;
                 }
@@ -119,8 +121,20 @@ namespace Arway
             }
         }
 
-        IEnumerator uploadMapData(string map_name, string anchor_id)
+        public async void ReadyToUploadMap(string map_name, string anchor_id)
         {
+            await UploadMapDataAsync(map_name, anchor_id);
+        }
+
+        /// <summary>
+        /// UploadMapDataAsync
+        /// </summary>
+        /// <param name="map_name"></param>
+        /// <param name="anchor_id"></param>
+        /// <returns></returns>
+        public async Task UploadMapDataAsync(string map_name, string anchor_id)
+        {
+
             if (!String.IsNullOrEmpty(anchor_id))
             {
                 newMapPanel.SetActive(false);
@@ -129,83 +143,64 @@ namespace Arway
 
                 if (File.Exists(pcdPath))
                 {
-                    WWWForm form = new WWWForm();
-                    form.AddField("map_name", map_name);
-                    form.AddField("anchor_id", anchor_id);
-
-                    form.AddField("Latitude", m_latitude);
-                    form.AddField("Longitude", m_longitude);
-                    form.AddField("Altitude ", m_altitude);
-
                     loaderText.text = "Uploading Map...";
 
-                    byte[] pcd_bytes;
+                    HttpClient client = new HttpClient();
 
-                    if (File.Exists(pcdPath))
+                    // we need to send a request with multipart/form-data
+                    var multiForm = new MultipartFormDataContent();
+
+                    // add API method params
+                    multiForm.Add(new StringContent(mapNameText.text), "map_name");
+                    multiForm.Add(new StringContent(m_latitude), "Latitude");
+                    multiForm.Add(new StringContent(m_longitude), "Longitude");
+                    multiForm.Add(new StringContent(m_altitude), "Altitude");
+
+                    multiForm.Add(new StringContent(anchor_id), "anchor_id");
+
+                    FileStream pcd = File.OpenRead(pcdPath);
+                    multiForm.Add(new StreamContent(pcd), "pcd", Path.GetFileName(pcdPath));
+
+                    client.DefaultRequestHeaders.Add("dev-token", devToken);
+
+                    uiManager.SetProgress(0);
+                    uiManager.ShowProgressBar();
+
+                    // send request to UPLOAD API
+                    if (isNetworkAvailable())
                     {
-                        pcd_bytes = File.ReadAllBytes(pcdPath);
-                        form.AddBinaryData("pcd", pcd_bytes, Path.GetFileName(pcdPath));
-                    }
+                        var response = await client.PostAsync(uploadURL, multiForm);
+                        Debug.Log("upload response : " + response);
+                        uiManager.SetProgress(100);
 
-                    UnityWebRequest req = UnityWebRequest.Post(uploadURL, form);
+                        PlayerPrefs.SetString("CURR_MAP_NAME", map_name);
 
-                    req.SetRequestHeader("dev-token", devToken);
-
-                    req.SendWebRequest();
-
-                    if (req.isHttpError || req.isNetworkError)
-                    {
-                        Debug.Log(req.error);
+                        NotificationManager.Instance.GenerateSuccess("Upload Done.");
                         mLoader.SetActive(false);
+
+                        // Delete map files once upload done.. 
+                        StartCoroutine(DeleteMapFile(pcdPath));
+
                     }
                     else
                     {
-                        uiManager.SetProgress(0);
-                        uiManager.ShowProgressBar();
-                        int value = 0;
-
-                        while (!req.isDone)
-                        {
-                            if (isNetworkAvailable())
-                            {
-                                value = (int)(100f * req.uploadProgress);
-                                // Debug.Log(string.Format("Upload progress: {0}%", value));
-                                uiManager.SetProgress(value);
-                            }
-                            else
-                            {
-                                Debug.Log("upload status : " + req.downloadHandler.text);
-                                NotificationManager.Instance.GenerateSuccess("Upload Failed!!");
-                                mLoader.SetActive(false);
-                            }
-
-                            yield return new WaitForEndOfFrame();
-                        }
-
-                        if (value >= 100)
-                        {
-                            Debug.Log("upload status : " + req.downloadHandler.text);
-                            NotificationManager.Instance.GenerateSuccess("Upload Done.");
-                            mLoader.SetActive(false);
-                            uiManager.HideProgressBar();
-                        }
-                        else
-                        {
-                            Debug.Log("upload status : " + req.downloadHandler.text);
-                            NotificationManager.Instance.GenerateError("Upload Failed!!");
-                            mLoader.SetActive(false);
-                            uiManager.HideProgressBar();
-                        }
-
-                        // Reload Mapping Scene
-                        Debug.Log("Re-Load Mapping Scene.");
-                        StartCoroutine(ReloadCurrentScene());
+                        Debug.Log("upload status : No internet!! ");
+                        NotificationManager.Instance.GenerateError("Upload Failed!!");
+                        mLoader.SetActive(false);
                     }
+
+                    uiManager.HideProgressBar();
+
+                    // Reload Mapping Scene
+                    Debug.Log("Re-Load Mapping Scene.");
+                    StartCoroutine(ReloadCurrentScene());
+
+                    //-------------------------------------------------------------------------------------
                 }
                 else
                 {
                     Debug.Log("************\tNo Map files !!!!!!!! \t***************");
-                    NotificationManager.Instance.GenerateWarning("Mapping files missing!!");
+                    NotificationManager.Instance.GenerateWarning("Map files missing!!");
                 }
             }
             else
@@ -214,6 +209,28 @@ namespace Arway
                 NotificationManager.Instance.GenerateError("NO Anchor Id, Try mapping bigger area with more features");
             }
         }
+
+        //-------------------------------------------------------------------------------------
+        IEnumerator DeleteMapFile(string pcdPath)
+        {
+            DeleteFile(pcdPath);
+            yield return null;
+        }
+
+        void DeleteFile(string filePath)
+        {
+            // check if file exists
+            if (!File.Exists(filePath))
+            {
+                Debug.Log("No " + filePath + " filePath exists");
+            }
+            else
+            {
+                Debug.Log(filePath + " filePath exists, deleting...");
+                File.Delete(filePath);
+            }
+        }
+        //-------------------------------------------------------------------------------------
 
         // check for internet connectivity
         private bool isNetworkAvailable()

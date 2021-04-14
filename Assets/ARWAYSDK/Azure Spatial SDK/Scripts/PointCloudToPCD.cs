@@ -62,6 +62,9 @@ namespace Arway
 
         private void Init()
         {
+            updatedPoints = new List<Vector3>();
+            updatedPoints.Clear();
+
             Debug.Log("Initializing point cloud manager....");
 
             // Look for ARPointCloudManager if not assigned
@@ -174,8 +177,6 @@ namespace Arway
             updateUI(false);
 
             Debug.Log(">>>>>>>>>>>>>>   Mapping Started...  <<<<<<<<<<<<");
-            updatedPoints = new List<Vector3>();
-            updatedPoints.Clear();
 
             isRecording = true;
             timerManager.StartTimer();
@@ -211,6 +212,7 @@ namespace Arway
         public void StopMapping()
         {
             createAnchor.AdvanceDemoAsync();
+
             pointCloudManager.enabled = false;
             pointCloudManager.SetTrackablesActive(false);
 
@@ -268,16 +270,22 @@ namespace Arway
 
         public async Task WriteLinesToPCD(string pcdPath, string[] lines)
         {
-            File.WriteAllLines(pcdPath, lines);
-            Debug.Log("************\t PCD file created.\t***************");
-            // NotificationManager.Instance.GenerateSuccess("PCD File Created.");
-
-            // show new map panel and upload the pcd file
-            updateUI(true);
-
-            if (File.Exists(pcdPath))
+            try
             {
-                newMapPanel.SetActive(true);
+                //Debug.Log("Path: " + pcdPath + " points count: " + lines.Length);
+                File.WriteAllLines(pcdPath, lines);
+                Debug.Log("************\t PCD file created.\t***************");
+
+                // show new map panel and upload the pcd file
+                updateUI(true);
+
+                if (File.Exists(pcdPath))
+                {
+                    newMapPanel.SetActive(true);
+                }
+            } catch (Exception e)
+            {
+                Debug.Log("Exception in writing file!!" + e.ToString());
             }
         }
 

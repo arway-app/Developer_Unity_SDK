@@ -46,7 +46,6 @@ namespace Arway
         private GameObject destinationDropdown;
         private TMP_Dropdown dropdown;
 
-        // -------------------------  
         [Header("Localization")]
         public string map_id;
         public string mapped_Cloud_Id;
@@ -78,7 +77,6 @@ namespace Arway
 
         private bool isReadyToLocalize;
 
-        //AR Camera in the scene
         public Camera ARCamera;
 
         [Header("Show/Hide Content")]
@@ -132,28 +130,43 @@ namespace Arway
                 }
             }
 
-            // Add ARAnchor to ARSpace
-            // m_ARSpace.AddComponent<ARAnchor>();
-
             // Create WaypointsAndDestinations Group with an ARAnchor
             m_WaypointsAndDestinations = new GameObject("Waypoints & Destinations");
             m_WaypointsAndDestinations.transform.parent = m_ARSpace.transform;
-            // m_WaypointsAndDestinations.AddComponent<ARAnchor>();
 
             // Create 3D Models Group with an ARAnchor
             m_3DModels = new GameObject("3D Models");
             m_3DModels.transform.parent = m_ARSpace.transform;
-            // m_3DModels.AddComponent<ARAnchor>();
 
             // Create Images Group with an ARAnchor
             m_Images = new GameObject("Images");
             m_Images.transform.parent = m_ARSpace.transform;
-            // m_Images.AddComponent<ARAnchor>();
 
             // Create Text Group with an ARAnchor
             m_Texts = new GameObject("Texts");
             m_Texts.transform.parent = m_ARSpace.transform;
-            // m_Texts.AddComponent<ARAnchor>();
+        }
+
+        public void AddARAnchors()
+        {
+            RemoveARAnchors();
+
+            Debug.Log("Adding AR Anchors");
+
+            m_WaypointsAndDestinations.AddComponent<ARAnchor>();
+            m_3DModels.AddComponent<ARAnchor>();
+            m_Images.AddComponent<ARAnchor>();
+            m_Texts.AddComponent<ARAnchor>();
+        }
+
+        public void RemoveARAnchors()
+        {
+            Debug.Log("Removing AR Anchors");
+
+            Destroy(m_WaypointsAndDestinations.GetComponent<ARAnchor>());
+            Destroy(m_3DModels.GetComponent<ARAnchor>());
+            Destroy(m_Images.GetComponent<ARAnchor>());
+            Destroy(m_Texts.GetComponent<ARAnchor>());
         }
 
         private bool CheckMapIdDetails()
@@ -294,7 +307,6 @@ namespace Arway
             }
         }
 
-
         public unsafe void RequestLocalization()
         {
             if (!isReadyToLocalize)
@@ -303,6 +315,8 @@ namespace Arway
                 Debug.Log("********  NOT READY TO LOCALIZE !!   *******");
                 return;
             }
+
+            RemoveARAnchors();
 
             XRCameraIntrinsics intr;
             ARCameraManager cameraManager = m_Sdk.cameraManager;
@@ -360,7 +374,6 @@ namespace Arway
                 lr.timestamp = image.timestamp;
 
                 //show requeset counts..
-
                 loc_attempts_txt.GetComponent<TMP_Text>().enabled = true;
 
                 string output = JsonUtility.ToJson(lr);
@@ -405,6 +418,7 @@ namespace Arway
                             PlayerPrefs.SetString("COOKIE", sessionCookieString);
                         }
                     }
+
                     loaderPanel.SetActive(false);
 
                     Debug.Log("All OK");
@@ -422,6 +436,8 @@ namespace Arway
 
                         if (vibrateOnLocalize)
                             Handheld.Vibrate();
+
+                        AddARAnchors();
                     }
 
                     loc_attempts_txt.text = "Localization attempts:  " + counts + " / " + requestCount;
