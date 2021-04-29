@@ -13,11 +13,9 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using System.IO;
 using System.Threading.Tasks;
-using UnityEngine.UI;
 using System;
 using UnityEngine.XR.ARSubsystems;
 using System.Collections;
-using Microsoft.Azure.SpatialAnchors.Unity.Examples;
 
 namespace Arway
 {

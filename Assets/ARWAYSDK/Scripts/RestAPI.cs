@@ -238,6 +238,9 @@ namespace Arway
         public string binary_link;
         public string pcd_link;
         public string uploaded;
+        public string AnchorId;
+        public string Latitude;
+        public string Longitude;
     }
 
 

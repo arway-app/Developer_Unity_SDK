@@ -32,11 +32,15 @@ namespace Arway
         public Text debugpose;
 
         [SerializeField]
-        private GameObject loaderPanel;
+        private GameObject loaderPanel, moveDeviceAnim;
         [SerializeField]
         private Text loaderText;
         [SerializeField]
         private GameObject localizeButton;
+        [SerializeField]
+        private float localizationTimeout = 10f;
+
+        private float timePassed;
 
         public List<string> cloudMaps = new List<string>();
 
@@ -94,6 +98,7 @@ namespace Arway
                 }
             }
         }
+
         /// <summary>
         /// Start this instance.
         /// </summary>
@@ -109,12 +114,19 @@ namespace Arway
             ARSpace.SetActive(showContentBeforeLocalization);
             destinationDropdown.SetActive(showContentBeforeLocalization);
 
+            // Set max Localization Time to 30 secs
+            if (localizationTimeout > 30f)
+            {
+                localizationTimeout = 30f;
+            }
+
             base.Start();
 
             if (!SanityCheckAccessConfiguration())
             {
                 return;
             }
+
             feedbackBox.text = stateParams[currentAppState].StepMessage;
         }
 
@@ -145,7 +157,7 @@ namespace Arway
                         Matrix4x4 resultpose = anchorPoseOg * cloudMapOffset.inverse;
 
                         loaderPanel.SetActive(false);
-                        localizeButton.SetActive(false);
+                        // localizeButton.SetActive(false);
                         ARSpace.SetActive(true);
                         destinationDropdown.SetActive(true);
 
@@ -164,6 +176,8 @@ namespace Arway
                 });
 
                 Debug.Log("Yay, anchor located!");
+
+                SetBypassCache(true);
             }
         }
 
@@ -183,6 +197,24 @@ namespace Arway
 
         public override void Update()
         {
+            if (loaderPanel.activeInHierarchy)
+            {
+                timePassed += Time.deltaTime;
+
+                if (timePassed >= localizationTimeout)
+                {
+                    loaderPanel.SetActive(false);
+
+                    currentAppState = AppState.DemoStepBusy;
+                    CloudManager.StopSession();
+                    currentWatcher = null;
+                    currentAppState = AppState.DemoStepCreateSessionForQuery;
+                }
+            }
+            else
+            {
+                timePassed = 0;
+            }
             base.Update();
         }
 
@@ -201,6 +233,7 @@ namespace Arway
 
                     loaderText.text = "Localizing...";
                     loaderPanel.SetActive(true);
+                    moveDeviceAnim.SetActive(true);
 
                     currentAppState = AppState.DemoStepLookingForAnchor;
                     if (currentWatcher != null)

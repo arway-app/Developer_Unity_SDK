@@ -95,7 +95,7 @@ namespace Arway
         /// </summary>
         public unsafe void RequestLocalization()
         {
-            
+
             XRCameraIntrinsics intr;
             ARCameraManager cameraManager = m_Sdk.cameraManager;
             var cameraSubsystem = cameraManager.subsystem;
@@ -199,10 +199,10 @@ namespace Arway
                     {
                         if (www.GetResponseHeaders().TryGetValue("SET-COOKIE", out string result))
                         {
-                            
-                                sessionCookieString = result;
-                                PlayerPrefs.SetString("COOKIE", sessionCookieString);
-                            
+
+                            sessionCookieString = result;
+                            PlayerPrefs.SetString("COOKIE", sessionCookieString);
+
                         }
                     }
 
@@ -210,7 +210,7 @@ namespace Arway
 
                     Debug.Log("All OK");
                     Debug.Log("Status Code: " + www.downloadHandler.text);
-                   
+
                     requestCount++;
 
                     LocalizationResponse localization = JsonUtility.FromJson<LocalizationResponse>(www.downloadHandler.text);
@@ -288,8 +288,11 @@ namespace Arway
 
                     for (int i = 0; i < cloudListItem.cloudMapList.Length; i++)
                     {
-                        string map_name = UnityWebRequest.UnEscapeURL(cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].map_name);
-                        cloudDropdown.options.Add(new TMP_Dropdown.OptionData(map_name + "  " + cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].id));
+                        if (cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].AnchorId == "NULL")
+                        {
+                            string map_name = UnityWebRequest.UnEscapeURL(cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].map_name);
+                            cloudDropdown.options.Add(new TMP_Dropdown.OptionData(map_name + "  " + cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].id));
+                        }
                     }
                 }
                 catch (Exception e)

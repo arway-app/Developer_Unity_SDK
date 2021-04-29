@@ -64,6 +64,13 @@ namespace Arway
             StartCoroutine(GetMapLocation());
         }
 
+        public void CancelMapUpload()
+        {
+            // Reload Mapping Scene
+            Debug.Log("Re-Load Mapping Scene.");
+            StartCoroutine(ReloadCurrentScene());
+        }
+
         public void uploadMapData()
         {
             if (mapNameText.text.Length > 0)

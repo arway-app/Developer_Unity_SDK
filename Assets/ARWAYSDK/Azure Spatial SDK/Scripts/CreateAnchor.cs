@@ -45,6 +45,7 @@ public class CreateAnchor : DemoScriptBase
             }
         }
     }
+
     [HideInInspector]
     public static string currentAnchorId = "";
     public static Vector3 ARCameraPos = Vector3.zero;
@@ -153,14 +154,13 @@ public class CreateAnchor : DemoScriptBase
 
                 await CloudManager.StartSessionAsync();
                 ARCameraPos = Camera.main.transform.position;
-                ARCameraRot = Quaternion.Euler(0f, Camera.main.transform.rotation.eulerAngles.y, Camera.main.transform.rotation.eulerAngles.z);
-                // Create Anchor At Camera Transform
+                ARCameraRot = Quaternion.identity;
 
+                // Create Anchor At Camera Transform
                 SpawnOrMoveCurrentAnchoredObject(ARCameraPos, ARCameraRot);
 
                 currentAppState = AppState.DemoStepStopSession;
                 break;
-
             case AppState.DemoStepStopSession:
                 currentAppState = AppState.DemoStepBusy;
 
@@ -178,7 +178,6 @@ public class CreateAnchor : DemoScriptBase
                 CleanupSpawnedObjects();
                 await CloudManager.ResetSessionAsync();
 
-
                 currentAppState = AppState.DemoStepCreateSession;
 
                 break;
@@ -190,7 +189,7 @@ public class CreateAnchor : DemoScriptBase
         }
     }
 
-    public static string getCurrentAnchorId()
+        public static string getCurrentAnchorId()
     {
         return currentAnchorId;
     }

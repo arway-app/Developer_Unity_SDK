@@ -19,9 +19,6 @@ public class LocalizeAnchor : DemoScriptBase
     private Text loaderText;
 
     [SerializeField]
-    private TMP_Text mapName;
-
-    [SerializeField]
     private GameObject localizeButton;
 
     internal enum AppState
@@ -92,8 +89,9 @@ public class LocalizeAnchor : DemoScriptBase
 
         // Get Current Spatial Anchor ID from PlayerPrefs
         currentAnchorId = PlayerPrefs.GetString("CURR_ANCHOR_ID");
-        mapName.text = "";
 
+        SetBypassCache(true);
+        
         Debug.Log("Azure Spatial Anchors script started");
     }
 
@@ -112,12 +110,10 @@ public class LocalizeAnchor : DemoScriptBase
 #if UNITY_ANDROID || UNITY_IOS
                 anchorPose = currentCloudAnchor.GetPose();
 #endif
-                string last_map_name = PlayerPrefs.GetString("CURR_MAP_NAME");
-                mapName.text = "Localized Map : " + last_map_name;
 
                 NotificationManager.Instance.GenerateSuccess("Anchor found : " + args.Identifier);
                 loaderPanel.SetActive(false);
-                localizeButton.SetActive(false);
+                // localizeButton.SetActive(false);
 
                 // HoloLens: The position will be set based on the unityARUserAnchor that was located.
                 SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
