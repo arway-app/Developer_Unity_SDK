@@ -14,12 +14,29 @@ using UnityEngine.SceneManagement;
 public class LocalizeAnchor : DemoScriptBase
 {
     [SerializeField]
-    private GameObject loaderPanel;
+    private GameObject loaderPanel, moveDeviceAnim;
+
     [SerializeField]
     private Text loaderText;
 
     [SerializeField]
     private GameObject localizeButton;
+
+    [SerializeField]
+    private float localizationTimeout = 10f;
+
+    private float timePassed;
+
+    [SerializeField]
+    private GameObject ARSpaceOrigin;
+
+    [HideInInspector]
+    public bool isLocalized;
+
+    [SerializeField]
+    private GameObject arwayInfoPopup;
+
+    private bool isPopUpSeen = false;
 
     internal enum AppState
     {
@@ -46,7 +63,6 @@ public class LocalizeAnchor : DemoScriptBase
         };
 
     private AppState _currentAppState = AppState.DemoStepCreateSessionForQuery;
-
 
     AppState currentAppState
     {
@@ -79,19 +95,26 @@ public class LocalizeAnchor : DemoScriptBase
     {
         Debug.Log(">>Azure Spatial Anchors Create And Host Anchor");
 
+        // Set max Localization Time to 30 secs
+        if (localizationTimeout > 30f)
+        {
+            localizationTimeout = 30f;
+        }
+
         base.Start();
 
         if (!SanityCheckAccessConfiguration())
         {
             return;
         }
+
         feedbackBox.text = stateParams[currentAppState].StepMessage;
 
         // Get Current Spatial Anchor ID from PlayerPrefs
         currentAnchorId = PlayerPrefs.GetString("CURR_ANCHOR_ID");
 
         SetBypassCache(true);
-        
+
         Debug.Log("Azure Spatial Anchors script started");
     }
 
@@ -115,10 +138,27 @@ public class LocalizeAnchor : DemoScriptBase
                 loaderPanel.SetActive(false);
                 // localizeButton.SetActive(false);
 
+                isLocalized = true;
+                ARSpaceOrigin.SetActive(true);
+
+                // show ARWAY info popup
+                StartCoroutine(showPopUpMenu());
+
                 // HoloLens: The position will be set based on the unityARUserAnchor that was located.
                 SpawnOrMoveCurrentAnchoredObject(anchorPose.position, anchorPose.rotation);
                 // currentAppState = AppState.DemoStepDeleteFoundAnchor;
             });
+        }
+    }
+
+    private IEnumerator showPopUpMenu()
+    {
+        yield return new WaitForSeconds(2f);
+
+        if (!isPopUpSeen)
+        {
+            arwayInfoPopup.SetActive(true);
+            isPopUpSeen = true;
         }
     }
 
@@ -127,6 +167,25 @@ public class LocalizeAnchor : DemoScriptBase
     /// </summary>
     public override void Update()
     {
+        if (loaderPanel.activeInHierarchy)
+        {
+            timePassed += Time.deltaTime;
+
+            if (timePassed >= localizationTimeout)
+            {
+                loaderPanel.SetActive(false);
+
+                currentAppState = AppState.DemoStepBusy;
+                CloudManager.StopSession();
+                currentWatcher = null;
+                currentAppState = AppState.DemoStepCreateSessionForQuery;
+            }
+        }
+        else
+        {
+            timePassed = 0;
+        }
+
         base.Update();
     }
 
@@ -181,6 +240,7 @@ public class LocalizeAnchor : DemoScriptBase
 
                 loaderText.text = "Localizing...";
                 loaderPanel.SetActive(true);
+                moveDeviceAnim.SetActive(true);
 
                 currentAppState = AppState.DemoStepLookingForAnchor;
                 if (currentWatcher != null)
@@ -275,7 +335,7 @@ public class LocalizeAnchor : DemoScriptBase
         }
 
         Debug.Log(asyncLoad.progress);
-        yield return new WaitForSeconds(0.8f);
+        // yield return new WaitForSeconds(0.8f);
 
         asyncLoad.allowSceneActivation = true;
     }

@@ -44,7 +44,8 @@ namespace Arway
 
         public TMP_Text loc_attempts_txt;
 
-        private int counts = 0;
+        [HideInInspector]
+        public int counts = 0;
         private int requestCount = 0;
 
         private Texture2D m_Texture;

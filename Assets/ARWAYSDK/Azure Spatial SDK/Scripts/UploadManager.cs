@@ -34,6 +34,9 @@ namespace Arway
         private GameObject mLoader;
 
         [SerializeField]
+        private GameObject moveDeviceAnim;
+
+        [SerializeField]
         private Text loaderText;
 
         string pcdName = "map.pcd";
@@ -47,6 +50,8 @@ namespace Arway
         // Start is called before the first frame update
         void Start()
         {
+            moveDeviceAnim.SetActive(false);
+
             GetMapCoordinates();
 
             pcdPath = Path.Combine(Application.persistentDataPath + "/map/", pcdName);
@@ -79,6 +84,7 @@ namespace Arway
 
                 loaderText.text = "Getting ANCHOR_ID...";
                 mLoader.SetActive(true);
+                moveDeviceAnim.SetActive(false);
 
                 StartCoroutine(checkForAnchorId(mapNameText.text));
             }
@@ -147,6 +153,7 @@ namespace Arway
                 newMapPanel.SetActive(false);
                 loaderText.text = "Loading...";
                 mLoader.SetActive(true);
+                moveDeviceAnim.SetActive(false);
 
                 if (File.Exists(pcdPath))
                 {

@@ -49,7 +49,7 @@ public class CreateAnchor : DemoScriptBase
     [HideInInspector]
     public static string currentAnchorId = "";
     public static Vector3 ARCameraPos = Vector3.zero;
-    public Quaternion ARCameraRot = Quaternion.identity;
+    public static Quaternion ARCameraRot = Quaternion.identity;
 
     /// <summary>
     /// Start is called on the frame when a script is enabled just before any
@@ -138,7 +138,6 @@ public class CreateAnchor : DemoScriptBase
 
     public async override Task AdvanceDemoAsync()
     {
-
         switch (currentAppState)
         {
             case AppState.DemoStepCreateSession:
@@ -189,7 +188,7 @@ public class CreateAnchor : DemoScriptBase
         }
     }
 
-        public static string getCurrentAnchorId()
+    public static string getCurrentAnchorId()
     {
         return currentAnchorId;
     }

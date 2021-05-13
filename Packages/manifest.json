@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "com.microsoft.azure.spatial-anchors-sdk.android": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.android-2.7.2.tgz",
-    "com.microsoft.azure.spatial-anchors-sdk.core": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.core-2.7.2.tgz",
-    "com.microsoft.azure.spatial-anchors-sdk.ios": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.ios-2.7.2.tgz",
-    "com.microsoft.azure.spatial-anchors-sdk.windows": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.windows-2.7.2.tgz",
+    "com.microsoft.azure.spatial-anchors-sdk.android": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.android-2.8.1.tgz",
+    "com.microsoft.azure.spatial-anchors-sdk.core": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.core-2.8.1.tgz",
+    "com.microsoft.azure.spatial-anchors-sdk.ios": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.ios-2.8.1.tgz",
+    "com.microsoft.azure.spatial-anchors-sdk.windows": "file:../Assets/ARWAYSDK/Azure Spatial SDK/Packages/com.microsoft.azure.spatial-anchors-sdk.windows-2.8.1.tgz",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.device-simulator": "2.2.4-preview",
     "com.unity.ide.rider": "1.1.4",

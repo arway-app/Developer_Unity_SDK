@@ -25,9 +25,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
 
         protected HProgressBar m_ProgressBar;
 
-
         #endregion // Member Variables
-
 
         #region Unity Inspector Variables
         [SerializeField]
@@ -210,11 +208,12 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 throw new ArgumentNullException(nameof(anchorIds));
             }
 
+            anchorLocateCriteria.NearAnchor = new NearAnchorCriteria();
+
             anchorIdsToLocate.Clear();
             anchorIdsToLocate.AddRange(anchorIds);
 
             string[] anchoriden = anchorIdsToLocate.ToArray();
-  
 
             anchorLocateCriteria.Identifiers = anchoriden;
         }
@@ -284,7 +283,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
             // Get the cloud-native anchor behavior
             CloudNativeAnchor cna = objectToMove.GetComponent<CloudNativeAnchor>();
-            
+
             // Warn and exit if the behavior is missing
             if (cna == null)
             {
@@ -298,7 +297,7 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
                 // Yes. Apply the cloud anchor, which also sets the pose.
                 Debug.Log("setting pose internally ***********");
                 cna.CloudToNative(cloudSpatialAnchor);
-               // cna.SetPose(worldPos, worldRot);
+                // cna.SetPose(worldPos, worldRot);
             }
             else
             {
@@ -562,13 +561,13 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
             if (spawnedObject == null)
             {
                 // Use factory method to create
-                
+
                 spawnedObject = SpawnNewAnchoredObject(worldPos, worldRot, currentCloudAnchor);
             }
             else
             {
                 // Use factory method to move
-                
+
                 MoveAnchoredObject(spawnedObject, worldPos, worldRot, currentCloudAnchor);
             }
         }
@@ -609,7 +608,6 @@ namespace Microsoft.Azure.SpatialAnchors.Unity.Examples
         {
             public string StepMessage { get; set; }
         }
-
 
         #region Public Properties
         /// <summary>

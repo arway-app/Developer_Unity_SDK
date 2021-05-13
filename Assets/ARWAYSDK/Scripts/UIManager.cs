@@ -13,7 +13,7 @@ namespace Arway
     {
         [SerializeField]
         private ArwaySDK m_Sdk = null;
-      
+
         [SerializeField]
         private GameObject deletePrompt = null;
 
@@ -43,11 +43,13 @@ namespace Arway
         private GameObject mLoader;
 
         [SerializeField]
+        private GameObject moveDeviceAnim;
+
+        [SerializeField]
         private Text loaderText;
 
         [SerializeField]
         private HProgressBar m_ProgressBar = null;
-
 
         //-------------------------- UI Manager ---------------------------------
 
@@ -71,16 +73,16 @@ namespace Arway
             deleteMessage.text = "Would you like to delete \"" + cloud_map_name + "\" Map ?";
             deletePrompt.SetActive(on);
         }
-       
+
         public void DeteleMapCall()
         {
             loaderText.text = "Deleting map...";
             mLoader.SetActive(true);
+            moveDeviceAnim.SetActive(false);
 
             StartCoroutine(DeleteCoudMap(cloud_id));
         }
 
-       
         IEnumerator DeleteCoudMap(string cloud_ID)
         {
             if (cloud_ID.Length > 0)
@@ -97,6 +99,7 @@ namespace Arway
                 if (req.isHttpError || req.isNetworkError)
                 {
                     mLoader.SetActive(false);
+
                     Debug.Log(req.error);
                     NotificationManager.Instance.GenerateError("Map Delete Failed!!");
                     deletePrompt.SetActive(false);
@@ -121,7 +124,6 @@ namespace Arway
             }
         }
 
-
         public void getCloudList()
         {
             Debug.Log("getting cloud list..." + devToken);
@@ -144,10 +146,10 @@ namespace Arway
 
                     loaderText.text = "Loading List...";
                     mLoader.SetActive(true);
+                    moveDeviceAnim.SetActive(false);
 
                     StartCoroutine(GetMapList());
                 }
-               
             }
         }
 
@@ -176,7 +178,6 @@ namespace Arway
                         Debug.Log(">>>>   Total maps: " + totalMaps + "   <<<<");
                         created_maps.text = "Created (" + totalMaps + ")";
 
-
                         for (int i = 0; i < totalMaps; i++)
                         {
 
@@ -190,7 +191,6 @@ namespace Arway
 
                             item.transform.Find("MapName").GetComponent<TextMeshProUGUI>().text = map_name + " (" + cloudListItem.cloudMapList[totalMaps - (i + 1)].id + ")";
                             item.transform.Find("Updated").GetComponent<TextMeshProUGUI>().text = cloudListItem.cloudMapList[totalMaps - (i + 1)].uploaded;
-
                         }
                     }
                     catch (Exception e)
@@ -229,7 +229,6 @@ namespace Arway
             asyncLoad.allowSceneActivation = true;
         }
 
-
         private void InitProgressBar()
         {
             m_ProgressBar.minValue = 0;
@@ -251,6 +250,5 @@ namespace Arway
         {
             m_ProgressBar.currentValue = value;
         }
-
     }
 }
