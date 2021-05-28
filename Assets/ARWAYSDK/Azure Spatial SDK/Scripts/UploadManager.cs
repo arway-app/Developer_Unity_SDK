@@ -1,13 +1,22 @@
-﻿using System;
+﻿/*===============================================================================
+Copyright (C) 2020 ARWAY Ltd. All Rights Reserved.
+
+This file is part of ARwayKit AR SDK
+
+The ARwayKit SDK cannot be copied, distributed, or made available to
+third-parties for commercial purposes without written permission of ARWAY Ltd.
+
+===============================================================================*/
+using System;
 using System.Collections;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 #if PLATFORM_ANDROID
 using UnityEngine.Android;
@@ -47,6 +56,22 @@ namespace Arway
 
         private string m_longitude = "0.0", m_latitude = "0.0", m_altitude = "0.0";
 
+        //-------------------------------------------------------------------------------------
+
+        protected List<Task> m_Jobs = new List<Task>();
+        private int m_JobLock = 0;
+
+        public static HttpClient mapperClient;
+
+        void Awake()
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+            mapperClient = new HttpClient(handler);
+            mapperClient.DefaultRequestHeaders.ExpectContinue = false;
+        }
+        //-------------------------------------------------------------------------------------
+
         // Start is called before the first frame update
         void Start()
         {
@@ -61,6 +86,11 @@ namespace Arway
             //deleteMapURL = m_Sdk.ContentServer + EndPoint.DELETE_CLOUD_MAP;
             uploadURL = m_Sdk.ContentServer + EndPoint.MAP_UPLOAD;
             devToken = m_Sdk.developerToken;
+
+            if (devToken != null)
+                mapperClient.DefaultRequestHeaders.Add("dev-token", devToken);
+            else
+                NotificationManager.Instance.GenerateWarning("Please Enter Your Developer Token!!");
         }
 
         public void GetMapCoordinates()
@@ -134,24 +164,47 @@ namespace Arway
             }
         }
 
+
+        //-------------------------------------------------------------------------------------
+        private void Update()
+        {
+            JobsUpdate();
+        }
+
+        public void JobsUpdate()
+        {
+            if (m_JobLock == 1)
+                return;
+            if (m_Jobs.Count > 0)
+            {
+                m_JobLock = 1;
+                RunJob(m_Jobs[0]);
+            }
+        }
+
+        private async void RunJob(Task t)
+        {
+            await t;
+            if (m_Jobs.Count > 0)
+                m_Jobs.RemoveAt(0);
+            m_JobLock = 0;
+        }
+
+        //-------------------------------------------------------------------------------------
+
+
         public async void ReadyToUploadMap(string map_name, string anchor_id)
         {
             await UploadMapDataAsync(map_name, anchor_id);
         }
 
-        /// <summary>
-        /// UploadMapDataAsync
-        /// </summary>
-        /// <param name="map_name"></param>
-        /// <param name="anchor_id"></param>
-        /// <returns></returns>
-        public async Task UploadMapDataAsync(string map_name, string anchor_id)
+        protected async Task UploadMapDataAsync(string map_name, string anchor_id)
         {
+            await Task.Delay(250);
 
             if (!String.IsNullOrEmpty(anchor_id))
             {
                 newMapPanel.SetActive(false);
-                loaderText.text = "Loading...";
                 mLoader.SetActive(true);
                 moveDeviceAnim.SetActive(false);
 
@@ -159,57 +212,83 @@ namespace Arway
                 {
                     loaderText.text = "Uploading Map...";
 
-                    HttpClient client = new HttpClient();
-
-                    // we need to send a request with multipart/form-data
-                    var multiForm = new MultipartFormDataContent();
-
-                    // add API method params
-                    multiForm.Add(new StringContent(mapNameText.text), "map_name");
-                    multiForm.Add(new StringContent(m_latitude), "Latitude");
-                    multiForm.Add(new StringContent(m_longitude), "Longitude");
-                    multiForm.Add(new StringContent(m_altitude), "Altitude");
-
-                    multiForm.Add(new StringContent(anchor_id), "anchor_id");
-
-                    FileStream pcd = File.OpenRead(pcdPath);
-                    multiForm.Add(new StreamContent(pcd), "pcd", Path.GetFileName(pcdPath));
-
-                    client.DefaultRequestHeaders.Add("dev-token", devToken);
-
-                    uiManager.SetProgress(0);
-                    uiManager.ShowProgressBar();
-
-                    // send request to UPLOAD API
-                    if (isNetworkAvailable())
-                    {
-                        var response = await client.PostAsync(uploadURL, multiForm);
-                        Debug.Log("upload response : " + response);
-                        uiManager.SetProgress(100);
-
-                        PlayerPrefs.SetString("CURR_MAP_NAME", map_name);
-
-                        NotificationManager.Instance.GenerateSuccess("Upload Done.");
-                        mLoader.SetActive(false);
-
-                        // Delete map files once upload done.. 
-                        StartCoroutine(DeleteMapFile(pcdPath));
-
-                    }
-                    else
-                    {
-                        Debug.Log("upload status : No internet!! ");
-                        NotificationManager.Instance.GenerateError("Upload Failed!!");
-                        mLoader.SetActive(false);
-                    }
-
-                    uiManager.HideProgressBar();
-
-                    // Reload Mapping Scene
-                    Debug.Log("Re-Load Mapping Scene.");
-                    StartCoroutine(ReloadCurrentScene());
-
+                    float uploadStartTime = Time.realtimeSinceStartup;
                     //-------------------------------------------------------------------------------------
+                    JobMapUploadAsync mapUploadJob = new JobMapUploadAsync
+                    {
+                        mapName = map_name,
+                        devToken = devToken,
+
+                        latitude = m_latitude,
+                        longitude = m_longitude,
+                        altitude = m_altitude,
+
+                        pcdPath = pcdPath,
+                        version = ArwaySDK.sdkVersion,
+                        anchorId = anchor_id
+                    };
+                    //-------------------------------------------------------------------------------------
+                    mapUploadJob.OnStart += () =>
+                    {
+                        Debug.Log("mapUpload  >>>> OnStart ");
+
+                        uiManager.SetProgress(0);
+                        uiManager.ShowProgressBar();
+                    };
+                    //-------------------------------------------------------------------------------------
+                    mapUploadJob.OnResult += (string result) =>
+                    {
+                        float eta = Time.realtimeSinceStartup - uploadStartTime;
+
+                        Debug.Log(string.Format("Map Data uploaded successfully in {0} seconds", eta + " response: " + result));
+
+                        if (uiManager != null)
+                            uiManager.HideProgressBar();
+                    };
+                    //-------------------------------------------------------------------------------------
+                    mapUploadJob.Progress.ProgressChanged += (s, progress) =>
+                    {
+                        int value = (int)(100f * progress);
+                        uiManager.SetProgress(value);
+                        //Debug.Log("Upload Progress: " + value);
+                        if (value >= 100)
+                        {
+                            Debug.Log("Upload Progress: " + value);
+
+                            NotificationManager.Instance.GenerateSuccess("Upload Done.");
+                            mLoader.SetActive(false);
+                            uiManager.HideProgressBar();
+
+                            PlayerPrefs.SetString("CURR_MAP_NAME", map_name);
+
+                            // Delete map files once upload done.. 
+                            StartCoroutine(DeleteMapFile(pcdPath));
+
+                            mapNameText.text = "";
+
+                            // Reload Mapping Scene
+                            Debug.Log("Re-Load Mapping Scene.");
+                            StartCoroutine(ReloadCurrentScene());
+                        }
+                    };
+                    //-------------------------------------------------------------------------------------
+                    mapUploadJob.OnError += (e) =>
+                    {
+                        Debug.Log("Upload OnError!");
+
+                        NotificationManager.Instance.GenerateError("Map Upload Error!!");
+
+                        uiManager.HideProgressBar();
+                        mLoader.SetActive(false);
+
+                        // Reload Mapping Scene
+                        Debug.Log("Re-Load Mapping Scene.");
+                        StartCoroutine(ReloadCurrentScene());
+                    };
+                    //-------------------------------------------------------------------------------------
+                    m_Jobs.Add(mapUploadJob.RunJobAsync());
+                    //-------------------------------------------------------------------------------------
+
                 }
                 else
                 {
@@ -222,7 +301,9 @@ namespace Arway
                 Debug.Log("************\tNo Anchor ID !!!!!!!! \t***************");
                 NotificationManager.Instance.GenerateError("NO Anchor Id, Try mapping bigger area with more features");
             }
+ 
         }
+
 
         //-------------------------------------------------------------------------------------
         IEnumerator DeleteMapFile(string pcdPath)
@@ -230,7 +311,7 @@ namespace Arway
             DeleteFile(pcdPath);
             yield return null;
         }
-
+        //-------------------------------------------------------------------------------------
         void DeleteFile(string filePath)
         {
             // check if file exists
@@ -243,6 +324,7 @@ namespace Arway
                 Debug.Log(filePath + " filePath exists, deleting...");
                 File.Delete(filePath);
             }
+
         }
         //-------------------------------------------------------------------------------------
 
@@ -254,7 +336,7 @@ namespace Arway
             else
                 return true;
         }
-
+        //-------------------------------------------------------------------------------------
         IEnumerator GetMapLocation()
         {
 #if PLATFORM_ANDROID
@@ -314,7 +396,7 @@ namespace Arway
                 Input.location.Stop();
             }
         }
-
+        //-------------------------------------------------------------------------------------
         IEnumerator ReloadCurrentScene()
         {
             yield return new WaitForSeconds(1f);
@@ -332,5 +414,6 @@ namespace Arway
 
             asyncLoad.allowSceneActivation = true;
         }
+        //-------------------------------------------------------------------------------------
     }
 }

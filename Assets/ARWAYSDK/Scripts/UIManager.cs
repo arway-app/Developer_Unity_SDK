@@ -170,7 +170,7 @@ namespace Arway
                     {
                         mLoader.SetActive(false);
                         string jsonResult = System.Text.Encoding.UTF8.GetString(www.downloadHandler.data);
-                        Debug.Log("JSON_OUTPUT:" + jsonResult);
+                        //Debug.Log("JSON_OUTPUT:" + jsonResult);
 
                         CloudListItem cloudListItem = JsonUtility.FromJson<CloudListItem>(jsonResult);
                         int totalMaps = cloudListItem.cloudMapList.Length;
@@ -231,24 +231,30 @@ namespace Arway
 
         private void InitProgressBar()
         {
-            m_ProgressBar.minValue = 0;
-            m_ProgressBar.maxValue = 100;
-            m_ProgressBar.currentValue = 0;
+            if (m_ProgressBar != null)
+            {
+                m_ProgressBar.minValue = 0;
+                m_ProgressBar.maxValue = 100;
+                m_ProgressBar.currentValue = 0;
+            }
         }
 
         public void ShowProgressBar()
         {
-            m_ProgressBar.transform.GetComponent<Fader>().FadeIn();
+            if (m_ProgressBar != null)
+                m_ProgressBar.transform.GetComponent<Fader>().FadeIn();
         }
 
         public void HideProgressBar()
         {
-            m_ProgressBar.transform.GetComponent<Fader>().FadeOut();
+            if (m_ProgressBar != null)
+                m_ProgressBar.transform.GetComponent<Fader>().FadeOut();
         }
 
         public void SetProgress(int value)
         {
-            m_ProgressBar.currentValue = value;
+            if (m_ProgressBar != null)
+                m_ProgressBar.currentValue = value;
         }
     }
 }

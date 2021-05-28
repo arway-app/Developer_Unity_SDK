@@ -261,4 +261,20 @@ namespace Arway
 
     }
 
+    [Serializable]
+    public struct MapRequest
+    {
+        public string devToken;
+        public string map_name;
+
+        public string latitude;
+        public string longitude;
+        public string altitude;
+
+        public string pcdPath;
+        public string version;
+
+        public string anchorId;
+    }
+
 }

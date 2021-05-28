@@ -82,10 +82,14 @@ namespace Arway
         /// Gets the cloud list.
         /// </summary>
         /// <returns>The cloud list.</returns>
+        ///
         IEnumerator GetCloudList()
         {
             loaderText.text = "Loading Maps...";
+
             Debug.Log("\n\n\n\n**********");
+            Debug.Log("getting cloud list..." + m_Sdk.developerToken);
+
             UnityWebRequest www = UnityWebRequest.Get(m_Sdk.ContentServer + EndPoint.CLOUD_LIST);
             www.SetRequestHeader("dev-token", m_Sdk.developerToken);
             yield return www.SendWebRequest();
@@ -100,13 +104,14 @@ namespace Arway
                     jsonResult = System.Text.Encoding.UTF8.GetString(www.downloadHandler.data);
 
                     CloudListItem cloudListItem = JsonUtility.FromJson<CloudListItem>(jsonResult);
+                    int totalMaps = cloudListItem.cloudMapList.Length;
 
-                    for (int i = 0; i < cloudListItem.cloudMapList.Length; i++)
+                    for (int i = 0; i < totalMaps; i++)
                     {
-                        if (cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].AnchorId != "NULL")
+                        if (cloudListItem.cloudMapList[totalMaps - (i + 1)].AnchorId != "NULL")
                         {
-                            string map_name = UnityWebRequest.UnEscapeURL(cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].map_name);
-                            cloudDropdown.options.Add(new TMP_Dropdown.OptionData(map_name + "  " + cloudListItem.cloudMapList[cloudListItem.cloudMapList.Length - (i + 1)].id));
+                            string map_name = UnityWebRequest.UnEscapeURL(cloudListItem.cloudMapList[totalMaps - (i + 1)].map_name);
+                            cloudDropdown.options.Add(new TMP_Dropdown.OptionData(map_name + "  " + cloudListItem.cloudMapList[totalMaps - (i + 1)].id));
                         }
                     }
                 }
