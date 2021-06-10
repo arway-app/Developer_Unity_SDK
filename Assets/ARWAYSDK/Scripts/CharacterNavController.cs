@@ -48,7 +48,7 @@ namespace Arway
             // Set first target to main camera position
             m_Target = new Vector3(m_MainCamera.transform.position.x, m_MainCamera.transform.position.y - 1, m_MainCamera.transform.position.z) + transform.forward;
 
-            // Instantiate Character Guide Set it's animation to Idle
+            // Instantiate Character Guide & set it's animation to Idle
             m_CharacterGuide = Instantiate(m_CharacterGuide, m_Target, Quaternion.identity) as GameObject;
             m_CharacterAnimator = m_CharacterGuide.GetComponent<Animator>();
             m_CharacterAnimator.SetTrigger("idle");

@@ -6528,6 +6528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e3535c3385e944ccad93b38343dc648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  updatedColors: []
   StartButton: {fileID: 533238813}
   StopButton: {fileID: 213112283}
   startSprite: {fileID: 21300000, guid: f877cafb52fc94baeb779c1842c0b959, type: 3}

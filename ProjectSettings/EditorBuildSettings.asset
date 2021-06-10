@@ -6,38 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/Navigation.unity
-    guid: 02e57dcc5a5534a3990b205e0f132d3a
-  - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/Localization.unity
-    guid: 46ca0d7e48cb44137b63192171480871
-  - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/Content.unity
-    guid: cfbd6beec88cf472e8b4e28453a313c0
-  - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/Character Navigation.unity
-    guid: 93e36b7bbabf55642b6e14fae7099f23
-  - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/MultiMap_Localization.unity
-    guid: 2fbc0256c3b484971bcff345343fad4f
-  - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/NonARCore_Sample/Localization_Non_ARFoundation.unity
-    guid: 93576cd3e923b49da9d43cdb2fde1b0e
-  - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/MultiMap_LocalizationWS.unity
-    guid: 0b31cd9c07ed3426ca0169eb48a00b82
-  - enabled: 0
     path: Assets/ARWAYSDK/Azure Spatial SDK/Scenes/Basic Demo.unity
     guid: 12b9ca710b12d4043ac1cd0c8c24e54b
   - enabled: 0
     path: Assets/ARWAYSDK/Azure Spatial SDK/Scenes/Mapping.unity
-    guid: db5169f0a7993f14c91fcfdfe0c0eacc
+    guid: 3deff7dc7707841bd87ce079edc376e3
   - enabled: 0
     path: Assets/ARWAYSDK/Azure Spatial SDK/Scenes/Navigation.unity
     guid: 2ca5237057116be4b89632c876a92bcd
   - enabled: 0
-    path: Assets/ARWAYSDK/Scenes/MultiMap_LocalizationWS.unity
-    guid: 0b31cd9c07ed3426ca0169eb48a00b82
+    path: Assets/ARWAYSDK/Azure Spatial SDK/Scenes/Character Navigation.unity
+    guid: b80b2140fa3471249b68a6a316e722ce
+  - enabled: 0
+    path: Assets/ARWAYSDK/Azure Spatial SDK/Scenes/Content.unity
+    guid: cfbd6beec88cf472e8b4e28453a313c0
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: dd907ef1f683d4448970b9472407a966,
       type: 2}

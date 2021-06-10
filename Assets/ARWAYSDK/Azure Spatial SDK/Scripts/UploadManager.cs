@@ -48,8 +48,8 @@ namespace Arway
         [SerializeField]
         private Text loaderText;
 
-        string pcdName = "map.pcd";
-        string pcdPath;
+        string plyName = "map.ply";
+        string plyPath;
 
         private string devToken = "";
         private string uploadURL = "";
@@ -79,7 +79,7 @@ namespace Arway
 
             GetMapCoordinates();
 
-            pcdPath = Path.Combine(Application.persistentDataPath + "/map/", pcdName);
+            plyPath = Path.Combine(Application.persistentDataPath + "/map/", plyName);
 
             m_Sdk = ArwaySDK.Instance;
 
@@ -208,7 +208,7 @@ namespace Arway
                 mLoader.SetActive(true);
                 moveDeviceAnim.SetActive(false);
 
-                if (File.Exists(pcdPath))
+                if (File.Exists(plyPath))
                 {
                     loaderText.text = "Uploading Map...";
 
@@ -223,7 +223,7 @@ namespace Arway
                         longitude = m_longitude,
                         altitude = m_altitude,
 
-                        pcdPath = pcdPath,
+                        plyPath = plyPath,
                         version = ArwaySDK.sdkVersion,
                         anchorId = anchor_id
                     };
@@ -262,7 +262,7 @@ namespace Arway
                             PlayerPrefs.SetString("CURR_MAP_NAME", map_name);
 
                             // Delete map files once upload done.. 
-                            StartCoroutine(DeleteMapFile(pcdPath));
+                            StartCoroutine(DeleteMapFile(plyPath));
 
                             mapNameText.text = "";
 
@@ -301,14 +301,14 @@ namespace Arway
                 Debug.Log("************\tNo Anchor ID !!!!!!!! \t***************");
                 NotificationManager.Instance.GenerateError("NO Anchor Id, Try mapping bigger area with more features");
             }
- 
+
         }
 
 
         //-------------------------------------------------------------------------------------
-        IEnumerator DeleteMapFile(string pcdPath)
+        IEnumerator DeleteMapFile(string plyPath)
         {
-            DeleteFile(pcdPath);
+            DeleteFile(plyPath);
             yield return null;
         }
         //-------------------------------------------------------------------------------------

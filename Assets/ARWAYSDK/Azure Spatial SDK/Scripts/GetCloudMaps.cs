@@ -19,6 +19,7 @@ namespace Arway
         [SerializeField]
         private TMP_Dropdown cloudDropdown;
 
+        [HideInInspector]
         public List<int> cloudMaps = new List<int>();
 
         private string jsonResult;

@@ -47,7 +47,7 @@ namespace Arway
         public string longitude;
         public string altitude;
 
-        public string pcdPath;
+        public string plyPath;
 
         public string version;
         public string anchorId;
@@ -69,7 +69,7 @@ namespace Arway
                 longitude = this.longitude,
                 altitude = this.altitude,
 
-                pcdPath = this.pcdPath,
+                pcdPath = this.plyPath,
                 version = this.version,
                 anchorId = this.anchorId
             };
@@ -111,7 +111,7 @@ namespace Arway
             string m_altitude = mapRequest.altitude;
             string devToken = mapRequest.devToken;
 
-            string pcdPath = mapRequest.pcdPath;
+            string plyPath = mapRequest.pcdPath;
             string sdkVersion = mapRequest.version;
             string anchorId = mapRequest.anchorId;
 
@@ -125,8 +125,8 @@ namespace Arway
 
             multiForm.Add(new StringContent(anchorId), "anchor_id");
 
-            FileStream pcd = File.OpenRead(pcdPath);
-            multiForm.Add(new StreamContent(pcd), "pcd", Path.GetFileName(pcdPath));
+            FileStream ply = File.OpenRead(plyPath);
+            multiForm.Add(new StreamContent(ply), "pcd", Path.GetFileName(plyPath));
 
             HttpRequestMessage requestBody = new HttpRequestMessage(HttpMethod.Post, ArwaySDK.arwayServerRootUrl + EndPoint.MAP_UPLOAD);
 
@@ -156,7 +156,7 @@ namespace Arway
             return result;
         }
 
-       
+
     }
 
 
