@@ -355,7 +355,7 @@ namespace Arway
             int i = 20;
             for (int counter = 0; counter < updatedPoints.Count; counter++)
             {
-                lines[i] = updatedPoints[counter].x + " " + updatedPoints[counter].y + " " + updatedPoints[counter].z + " " + updatedColors[counter].r + " " + updatedColors[counter].g + " " + updatedColors[counter].b;
+                lines[i] = updatedPoints[counter].x * -1f + " " + updatedPoints[counter].y + " " + updatedPoints[counter].z + " " + updatedColors[counter].r + " " + updatedColors[counter].g + " " + updatedColors[counter].b;
                 i++;
             }
 
